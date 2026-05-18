@@ -1,0 +1,41 @@
+/* style.css - SATPAM-Q Dashboard */
+
+body {
+    /* Memberikan warna latar belakang abu-abu sangat muda agar kartu putih lebih menonjol */
+    background-color: #f8f9fa !important;
+    font-family: "Segoe UI", Roboto, Helvetica, Arial, sans-serif;
+}
+
+/* Efek melayang pada kartu pemantauan dan kontrol */
+.card {
+    transition:
+        transform 0.3s ease,
+        box-shadow 0.3s ease;
+}
+
+.card:hover {
+    transform: translateY(-5px);
+    box-shadow: 0 10px 20px rgba(0, 0, 0, 0.08) !important;
+}
+
+/* Penyesuaian tipografi untuk angka sensor agar terlihat lebih padat */
+.display-3 {
+    letter-spacing: -2px;
+}
+
+/* Transisi halus untuk semua tombol */
+.btn {
+    transition: all 0.3s ease-in-out;
+}
+
+/* Kelas khusus yang akan dipanggil oleh JavaScript nanti untuk mengubah warna teks status */
+.text-status-on {
+    color: #198754 !important; /* Warna hijau success */
+    text-shadow: 0 0 15px rgba(25, 135, 84, 0.2);
+    font-weight: 700;
+}
+
+.text-status-off {
+    color: #dc3545 !important; /* Warna merah danger */
+    font-weight: 700;
+}

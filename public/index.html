@@ -1,0 +1,199 @@
+<!doctype html>
+<html lang="id">
+    <head>
+        <meta charset="UTF-8" />
+        <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+        <title>SATPAM-Q Dashboard</title>
+        <link
+            href="https://cdn.jsdelivr.net/npm/bootstrap@5.3.0/dist/css/bootstrap.min.css"
+            rel="stylesheet"
+        />
+        <script src="https://cdn.jsdelivr.net/npm/chart.js"></script>
+        <link rel="stylesheet" href="style.css" />
+    </head>
+    <body class="bg-light">
+        <nav class="navbar navbar-dark bg-dark shadow-sm">
+            <div class="container">
+                <span class="navbar-brand mb-0 h1 fw-bold">SATPAM-Q</span>
+                <button
+                    id="btnLogout"
+                    class="btn btn-outline-danger btn-sm d-none"
+                >
+                    Keluar
+                </button>
+            </div>
+        </nav>
+
+        <div class="container mt-5">
+            <div id="login-section" class="row justify-content-center">
+                <div class="col-md-5 col-lg-4">
+                    <div class="card shadow border-0 rounded-3">
+                        <div class="card-body p-4">
+                            <h4 class="card-title text-center mb-4">
+                                Akses Peternak
+                            </h4>
+                            <div class="mb-3">
+                                <label for="email" class="form-label"
+                                    >Alamat Email</label
+                                >
+                                <input
+                                    type="email"
+                                    class="form-control"
+                                    id="email"
+                                    placeholder="nama@email.com"
+                                />
+                            </div>
+                            <div class="mb-3">
+                                <label for="password" class="form-label"
+                                    >Kata Sandi</label
+                                >
+                                <input
+                                    type="password"
+                                    class="form-control"
+                                    id="password"
+                                    placeholder="********"
+                                />
+                            </div>
+                            <button
+                                id="btnLogin"
+                                class="btn btn-success w-100 fw-bold"
+                            >
+                                Masuk Dashboard
+                            </button>
+                            <div
+                                id="login-error"
+                                class="text-danger mt-3 text-center small"
+                                style="display: none"
+                            ></div>
+                        </div>
+                    </div>
+                </div>
+            </div>
+
+            <div id="dashboard-section" class="d-none">
+                <h5 class="mb-3 text-secondary border-bottom pb-2">
+                    Data Real-Time Kandang
+                </h5>
+                <div class="row mb-4">
+                    <div class="col-md-6 mb-3">
+                        <div class="card shadow-sm border-0 h-100 text-center">
+                            <div class="card-body">
+                                <p
+                                    class="card-title text-muted fw-semibold mb-1"
+                                >
+                                    SUHU KANDANG
+                                </p>
+                                <h1
+                                    class="display-3 fw-bold text-dark"
+                                    id="val-suhu"
+                                >
+                                    --<span class="fs-4">°C</span>
+                                </h1>
+                            </div>
+                        </div>
+                    </div>
+                    <div class="col-md-6 mb-3">
+                        <div class="card shadow-sm border-0 h-100 text-center">
+                            <div class="card-body">
+                                <p
+                                    class="card-title text-muted fw-semibold mb-1"
+                                >
+                                    KADAR AMONIA (MQ-135)
+                                </p>
+                                <h1
+                                    class="display-3 fw-bold text-dark"
+                                    id="val-amonia"
+                                >
+                                    --<span class="fs-4"> PPM</span>
+                                </h1>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+
+                <h5 class="mb-3 text-secondary border-bottom pb-2">
+                    Grafik Analisis Riwayat (Kondisi Terakhir)
+                </h5>
+                <div class="row mb-4">
+                    <div class="col-12">
+                        <div class="card shadow-sm border-0">
+                            <div class="card-body">
+                                <div
+                                    style="
+                                        position: relative;
+                                        height: 300px;
+                                        width: 100%;
+                                    "
+                                >
+                                    <canvas id="historyChart"></canvas>
+                                </div>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+
+                <div
+                    class="d-flex justify-content-between align-items-center border-bottom pb-2 mb-3"
+                >
+                    <h5 class="text-secondary mb-0">Kendali Aktuator</h5>
+                    <div class="form-check form-switch mb-0">
+                        <input
+                            class="form-check-input"
+                            type="checkbox"
+                            id="mode-switch"
+                        />
+                        <label
+                            class="form-check-label fw-bold text-primary"
+                            for="mode-switch"
+                            id="mode-label"
+                            >Mode: OTOMATIS</label
+                        >
+                    </div>
+                </div>
+
+                <div class="row">
+                    <div class="col-md-6 mb-3">
+                        <div class="card shadow-sm border-0 text-center">
+                            <div class="card-body">
+                                <p class="card-title fw-semibold mb-2">
+                                    Sirkulasi Udara (Kipas)
+                                </p>
+                                <h3 id="status-kipas" class="mb-3 text-muted">
+                                    Memuat...
+                                </h3>
+                                <button
+                                    id="btn-kipas"
+                                    class="btn btn-secondary w-100 fw-bold"
+                                    disabled
+                                >
+                                    Mohon Tunggu
+                                </button>
+                            </div>
+                        </div>
+                    </div>
+                    <div class="col-md-6 mb-3">
+                        <div class="card shadow-sm border-0 text-center">
+                            <div class="card-body">
+                                <p class="card-title fw-semibold mb-2">
+                                    Penurun Amonia (Mist Sprayer)
+                                </p>
+                                <h3 id="status-sprayer" class="mb-3 text-muted">
+                                    Memuat...
+                                </h3>
+                                <button
+                                    id="btn-sprayer"
+                                    class="btn btn-secondary w-100 fw-bold"
+                                    disabled
+                                >
+                                    Mohon Tunggu
+                                </button>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+            </div>
+        </div>
+
+        <script type="module" src="app.js"></script>
+    </body>
+</html>
