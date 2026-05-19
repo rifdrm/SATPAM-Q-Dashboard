@@ -115,6 +115,11 @@ onAuthStateChanged(auth, (user) => {
 // =========================================================
 function initChart() {
   const ctx = document.getElementById("historyChart").getContext("2d");
+
+  // Menerapkan font Raleway dan warna teks global untuk Chart.js
+  Chart.defaults.font.family = "'Raleway', sans-serif";
+  Chart.defaults.color = "#57534E"; // var(--color-neutral-text-light)
+
   myChart = new Chart(ctx, {
     type: "line",
     data: {
@@ -123,36 +128,70 @@ function initChart() {
         {
           label: "Suhu (°C)",
           data: [],
-          borderColor: "#ffc107", // Warna kuning Bootstrap
-          backgroundColor: "rgba(255, 193, 7, 0.1)",
+          borderColor: "#A47148", // GreenLeaf Tertiary (Clay)
+          backgroundColor: "rgba(164, 113, 72, 0.1)",
           borderWidth: 2,
           tension: 0.3,
           yAxisID: "y-suhu",
+          pointBackgroundColor: "#A47148",
+          pointRadius: 3,
         },
         {
           label: "Amonia (PPM)",
           data: [],
-          borderColor: "#0dcaf0", // Warna biru muda Bootstrap
-          backgroundColor: "rgba(13, 202, 240, 0.1)",
+          borderColor: "#86A873", // GreenLeaf Secondary (Sage)
+          backgroundColor: "rgba(134, 168, 115, 0.1)",
           borderWidth: 2,
           tension: 0.3,
           yAxisID: "y-amonia",
+          pointBackgroundColor: "#86A873",
+          pointRadius: 3,
         },
       ],
     },
     options: {
       responsive: true,
       maintainAspectRatio: false,
+      interaction: {
+        mode: "index",
+        intersect: false,
+      },
+      plugins: {
+        legend: {
+          labels: {
+            usePointStyle: true,
+            boxWidth: 8,
+          },
+        },
+        tooltip: {
+          backgroundColor: "#1C1917", // var(--color-neutral-text)
+          titleFont: { family: "'Raleway', sans-serif", size: 13 },
+          bodyFont: { family: "'Raleway', sans-serif", size: 13 },
+          padding: 12,
+          cornerRadius: 4,
+          displayColors: true,
+        },
+      },
       scales: {
+        x: {
+          grid: {
+            color: "#E7E5E4", // var(--color-neutral-divider)
+            drawBorder: false,
+          },
+        },
         "y-suhu": {
           type: "linear",
           position: "left",
-          title: { display: true, text: "Suhu (°C)" },
+          title: { display: true, text: "Suhu (°C)", font: { weight: 600 } },
+          grid: {
+            color: "#E7E5E4",
+            drawBorder: false,
+          },
         },
         "y-amonia": {
           type: "linear",
           position: "right",
-          title: { display: true, text: "Amonia (PPM)" },
+          title: { display: true, text: "Amonia (PPM)", font: { weight: 600 } },
           grid: { drawOnChartArea: false }, // Agar garis grid tidak bertumpuk
         },
       },
@@ -191,12 +230,12 @@ function startDatabaseListener(uid) {
         currentKipasState = data.kipas;
         if (currentKipasState === 1) {
           statusKipas.innerText = "MENYALA";
-          statusKipas.className = "status-text text-status-on";
+          statusKipas.className = "chip chip-on";
           btnKipas.innerText = "Matikan Kipas";
           btnKipas.className = "btn btn-destructive btn-large w-full";
         } else {
           statusKipas.innerText = "MATI";
-          statusKipas.className = "status-text text-status-off";
+          statusKipas.className = "chip chip-off";
           btnKipas.innerText = "Nyalakan Kipas";
           btnKipas.className = "btn btn-primary btn-large w-full";
         }
@@ -207,12 +246,12 @@ function startDatabaseListener(uid) {
         currentSprayerState = data.sprayer;
         if (currentSprayerState === 1) {
           statusSprayer.innerText = "MENYALA";
-          statusSprayer.className = "status-text text-status-on";
+          statusSprayer.className = "chip chip-on";
           btnSprayer.innerText = "Matikan Sprayer";
           btnSprayer.className = "btn btn-destructive btn-large w-full";
         } else {
           statusSprayer.innerText = "MATI";
-          statusSprayer.className = "status-text text-status-off";
+          statusSprayer.className = "chip chip-off";
           btnSprayer.innerText = "Nyalakan Sprayer";
           btnSprayer.className = "btn btn-primary btn-large w-full";
         }

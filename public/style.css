@@ -421,15 +421,42 @@ input:checked + .slider:before {
     border-radius: 50%;
 }
 
-/* 8. DYNAMIC STATUS TEXT */
-.status-text {
-    font-size: 20px;
-    margin-bottom: var(--space-4);
+/* 8. COMPONENTS - CHIPS & STATUS */
+.chip {
+    display: inline-flex;
+    align-items: center;
+    justify-content: center;
+    padding: var(--space-1) var(--space-3);
+    border-radius: var(--radius-sm);
+    font-family: var(--font-body);
+    font-size: 13px;
     font-weight: 600;
+    border: 1px solid transparent;
+    text-transform: uppercase;
+    letter-spacing: 0.05em;
+    margin-bottom: var(--space-4);
 }
-.text-status-on {
+
+.chip-on {
+    background-color: #dcfce7;
     color: var(--color-success);
+    border-color: #86efac;
 }
-.text-status-off {
-    color: var(--color-neutral-muted);
+
+.chip-off {
+    background-color: var(--color-bg-ghost-hover);
+    color: var(--color-neutral-text-light);
+    border-color: var(--color-neutral-border);
+}
+
+.chip-warning {
+    background-color: #fef9c3;
+    color: var(--color-warning);
+    border-color: #fde047;
+}
+
+.chip-error {
+    background-color: #fee2e2;
+    color: var(--color-error);
+    border-color: #fca5a5;
 }
