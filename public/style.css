@@ -1,41 +1,435 @@
-/* style.css - SATPAM-Q Dashboard */
+/* style.css - SATPAM-Q Dashboard - GreenLeaf Design System */
 
-body {
-    /* Memberikan warna latar belakang abu-abu sangat muda agar kartu putih lebih menonjol */
-    background-color: #f8f9fa !important;
-    font-family: "Segoe UI", Roboto, Helvetica, Arial, sans-serif;
+/* 1. VARIABLES (GreenLeaf System) */
+:root {
+    /* Colors */
+    --color-primary: #166534;
+    --color-primary-hover: #14532d;
+    --color-primary-active: #052e16;
+
+    --color-secondary: #86a873;
+    --color-tertiary: #a47148;
+
+    --color-neutral-muted: #a8a29e;
+    --color-neutral-border: #d6d3d1;
+    --color-neutral-divider: #e7e5e4;
+    --color-neutral-text: #1c1917;
+    --color-neutral-text-light: #57534e;
+
+    --color-bg-base: #fafaf5;
+    --color-bg-surface: #ffffff;
+    --color-bg-hover: #f0fdf4;
+    --color-bg-ghost-hover: #f5f5eb;
+
+    --color-success: #166534;
+    --color-warning: #ca8a04;
+    --color-error: #b91c1c;
+    --color-error-hover: #991b1b;
+    --color-info: #0e7490;
+
+    /* Typography */
+    --font-heading: "Merriweather", serif;
+    --font-body: "Raleway", sans-serif;
+    --font-mono: "Fira Code", monospace;
+
+    /* Spacing */
+    --space-1: 4px;
+    --space-2: 8px;
+    --space-3: 12px;
+    --space-4: 16px;
+    --space-6: 24px;
+    --space-8: 32px;
+    --space-12: 48px;
+    --space-16: 64px;
+    --space-24: 96px;
+
+    /* Radius */
+    --radius-sm: 4px;
+    --radius-md: 8px;
+    --radius-lg: 12px;
+    --radius-xl: 16px;
+    --radius-full: 9999px;
 }
 
-/* Efek melayang pada kartu pemantauan dan kontrol */
+/* 2. RESET & BASE */
+* {
+    box-sizing: border-box;
+    margin: 0;
+    padding: 0;
+}
+
+body {
+    background-color: var(--color-bg-base);
+    color: var(--color-neutral-text);
+    font-family: var(--font-body);
+    font-size: 16px;
+    line-height: 1.6;
+    letter-spacing: 0.01em;
+    -webkit-font-smoothing: antialiased;
+}
+
+h1,
+h2,
+h3,
+h4,
+h5,
+h6 {
+    font-family: var(--font-heading);
+    font-weight: 700;
+    line-height: 1.3;
+    letter-spacing: 0.01em;
+    color: var(--color-neutral-text);
+}
+
+/* Typography Utility */
+.overline {
+    font-size: 11px;
+    font-weight: 600;
+    line-height: 1.5;
+    letter-spacing: 0.08em;
+    text-transform: uppercase;
+}
+
+.small {
+    font-size: 14px;
+    line-height: 1.5;
+}
+
+.text-center {
+    text-align: center;
+}
+.text-muted {
+    color: var(--color-neutral-text-light);
+}
+.text-error {
+    color: var(--color-error);
+}
+.hidden {
+    display: none !important;
+}
+.w-full {
+    width: 100%;
+}
+.mt-12 {
+    margin-top: var(--space-3);
+}
+.mt-48 {
+    margin-top: var(--space-12);
+}
+.mb-4 {
+    margin-bottom: var(--space-4);
+}
+
+/* 3. LAYOUT */
+.container {
+    width: 100%;
+    max-width: 1200px;
+    margin: 0 auto;
+    padding: 0 var(--space-4);
+}
+
+.navbar {
+    background-color: var(--color-bg-surface);
+    border-bottom: 1px solid var(--color-neutral-divider);
+    padding: var(--space-4) 0;
+}
+
+.navbar-container {
+    display: flex;
+    justify-content: space-between;
+    align-items: center;
+}
+
+.brand {
+    font-family: var(--font-heading);
+    font-size: 20px;
+    font-weight: 700;
+    color: var(--color-primary);
+}
+
+.main-content {
+    padding-top: var(--space-12);
+    padding-bottom: var(--space-12);
+}
+
+.grid-2 {
+    display: grid;
+    grid-template-columns: 1fr;
+    gap: var(--space-6);
+}
+
+@media (min-width: 768px) {
+    .grid-2 {
+        grid-template-columns: 1fr 1fr;
+    }
+    .main-content {
+        padding-top: var(--space-16);
+    }
+    .mt-48 {
+        margin-top: var(--space-16);
+    }
+}
+
+.flex-between {
+    display: flex;
+    justify-content: space-between;
+    align-items: center;
+    flex-wrap: wrap;
+    gap: var(--space-4);
+}
+
+/* Section Headers */
+.section-header,
+.control-header {
+    border-bottom: 1px solid var(--color-neutral-divider);
+    padding-bottom: var(--space-2);
+    margin-bottom: var(--space-4);
+}
+.section-header h3,
+.control-header h3 {
+    font-size: 20px;
+    font-weight: 400; /* Subhead style */
+    line-height: 1.4;
+}
+
+/* 4. COMPONENTS - CARDS */
 .card {
-    transition:
-        transform 0.3s ease,
-        box-shadow 0.3s ease;
+    background-color: var(--color-bg-surface);
+    border: 1px solid var(--color-neutral-divider);
+    border-bottom: 2px solid var(--color-neutral-border);
+    border-radius: var(--radius-lg);
+    padding: var(--space-4);
+    transition: border-color 0.3s ease;
 }
 
 .card:hover {
-    transform: translateY(-5px);
-    box-shadow: 0 10px 20px rgba(0, 0, 0, 0.08) !important;
+    border-color: var(--color-neutral-muted);
 }
 
-/* Penyesuaian tipografi untuk angka sensor agar terlihat lebih padat */
-.display-3 {
-    letter-spacing: -2px;
+.login-container {
+    max-width: 400px;
+    margin: 0 auto;
 }
 
-/* Transisi halus untuk semua tombol */
+.card-title {
+    font-size: 28px;
+    margin-bottom: var(--space-6);
+}
+
+.data-card {
+    padding: var(--space-6) var(--space-4);
+}
+
+.data-value {
+    font-family: var(--font-heading);
+    font-size: 36px; /* Display style */
+    font-weight: 700;
+    line-height: 1.2;
+    letter-spacing: 0.02em;
+    margin-top: var(--space-2);
+}
+
+.data-unit {
+    font-family: var(--font-body);
+    font-size: 20px;
+    font-weight: 400;
+    color: var(--color-neutral-text-light);
+}
+
+.chart-wrapper {
+    position: relative;
+    height: 300px;
+    width: 100%;
+}
+
+/* 5. COMPONENTS - BUTTONS */
 .btn {
-    transition: all 0.3s ease-in-out;
+    font-family: var(--font-body);
+    font-weight: 600;
+    border-radius: var(--radius-md);
+    cursor: pointer;
+    transition: all 0.2s ease;
+    display: inline-flex;
+    align-items: center;
+    justify-content: center;
+    text-align: center;
 }
 
-/* Kelas khusus yang akan dipanggil oleh JavaScript nanti untuk mengubah warna teks status */
+.btn:disabled {
+    opacity: 0.5;
+    cursor: not-allowed;
+}
+
+.btn-small {
+    height: 32px;
+    padding: 0 var(--space-3);
+    font-size: 14px;
+}
+.btn-medium {
+    height: 40px;
+    padding: 0 var(--space-4);
+    font-size: 16px;
+}
+.btn-large {
+    height: 48px;
+    padding: 0 var(--space-6);
+    font-size: 16px;
+}
+
+.btn-primary {
+    background-color: var(--color-primary);
+    color: var(--color-bg-surface);
+    border: none;
+}
+.btn-primary:hover:not(:disabled) {
+    background-color: var(--color-primary-hover);
+}
+.btn-primary:active:not(:disabled) {
+    background-color: var(--color-primary-active);
+}
+
+.btn-secondary {
+    background-color: transparent;
+    color: var(--color-primary);
+    border: 2px solid var(--color-primary);
+}
+.btn-secondary:hover:not(:disabled) {
+    background-color: var(--color-bg-hover);
+}
+
+.btn-ghost {
+    background-color: transparent;
+    color: var(--color-primary);
+    border: none;
+}
+.btn-ghost:hover:not(:disabled) {
+    background-color: var(--color-bg-ghost-hover);
+}
+
+.btn-destructive {
+    background-color: var(--color-error);
+    color: var(--color-bg-surface);
+    border: none;
+}
+.btn-destructive:hover:not(:disabled) {
+    background-color: var(--color-error-hover);
+}
+
+/* 6. COMPONENTS - INPUTS */
+.form-group {
+    margin-bottom: var(--space-4);
+}
+
+.form-group label {
+    display: block;
+    font-family: var(--font-body);
+    font-weight: 500;
+    font-size: 14px;
+    color: var(--color-neutral-text);
+    margin-bottom: 6px;
+}
+
+.input-text {
+    width: 100%;
+    background-color: var(--color-bg-surface);
+    border: 1px solid var(--color-neutral-border);
+    border-radius: var(--radius-md);
+    color: var(--color-neutral-text);
+    padding: var(--space-3) var(--space-4);
+    height: 44px;
+    font-family: var(--font-body);
+    font-size: 16px;
+    transition: all 0.2s ease;
+}
+
+.input-text::placeholder {
+    color: var(--color-neutral-muted);
+}
+
+.input-text:focus {
+    outline: none;
+    border-color: var(--color-primary);
+    box-shadow: 0 0 0 2px rgba(22, 101, 52, 0.2);
+}
+
+/* 7. COMPONENTS - TOGGLE SWITCH (Auto/Manual) */
+.switch-wrapper {
+    display: flex;
+    align-items: center;
+    gap: var(--space-3);
+}
+
+.mode-label {
+    font-weight: 600;
+    font-size: 14px;
+}
+.auto-mode {
+    color: var(--color-primary);
+}
+.manual-mode {
+    color: var(--color-warning);
+} /* Warning color fits manual mode better visually or Primary but different text */
+
+.switch {
+    position: relative;
+    display: inline-block;
+    width: 44px;
+    height: 24px;
+}
+
+.switch input {
+    opacity: 0;
+    width: 0;
+    height: 0;
+}
+
+.slider {
+    position: absolute;
+    cursor: pointer;
+    top: 0;
+    left: 0;
+    right: 0;
+    bottom: 0;
+    background-color: var(--color-primary);
+    transition: 0.3s;
+}
+
+.slider:before {
+    position: absolute;
+    content: "";
+    height: 18px;
+    width: 18px;
+    left: 3px;
+    bottom: 3px;
+    background-color: white;
+    transition: 0.3s;
+}
+
+input:checked + .slider {
+    background-color: var(--color-warning);
+}
+
+input:checked + .slider:before {
+    transform: translateX(20px);
+}
+
+.slider.round {
+    border-radius: 24px;
+}
+
+.slider.round:before {
+    border-radius: 50%;
+}
+
+/* 8. DYNAMIC STATUS TEXT */
+.status-text {
+    font-size: 20px;
+    margin-bottom: var(--space-4);
+    font-weight: 600;
+}
 .text-status-on {
-    color: #198754 !important; /* Warna hijau success */
-    text-shadow: 0 0 15px rgba(25, 135, 84, 0.2);
-    font-weight: 700;
+    color: var(--color-success);
 }
-
 .text-status-off {
-    color: #dc3545 !important; /* Warna merah danger */
-    font-weight: 700;
+    color: var(--color-neutral-muted);
 }

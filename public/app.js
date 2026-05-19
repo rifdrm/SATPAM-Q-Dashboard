@@ -71,13 +71,13 @@ btnLogin.addEventListener("click", () => {
   btnLogin.disabled = true;
 
   signInWithEmailAndPassword(auth, email, password)
-    .then(() => (loginError.style.display = "none"))
+    .then(() => loginError.classList.add("hidden"))
     .catch((error) => {
       btnLogin.innerText = "Masuk Dashboard";
       btnLogin.disabled = false;
       loginError.innerText =
         "Gagal masuk: Periksa kembali email dan kata sandi Anda.";
-      loginError.style.display = "block";
+      loginError.classList.remove("hidden");
     });
 });
 
@@ -86,9 +86,9 @@ btnLogout.addEventListener("click", () => signOut(auth));
 onAuthStateChanged(auth, (user) => {
   if (user) {
     userUid = user.uid;
-    loginSection.classList.add("d-none");
-    dashboardSection.classList.remove("d-none");
-    btnLogout.classList.remove("d-none");
+    loginSection.classList.add("hidden");
+    dashboardSection.classList.remove("hidden");
+    btnLogout.classList.remove("hidden");
 
     // Inisialisasi Grafik Kosong Pertama Kali
     initChart();
@@ -100,9 +100,9 @@ onAuthStateChanged(auth, (user) => {
     btnLogin.disabled = false;
     emailInput.value = "";
     passwordInput.value = "";
-    dashboardSection.classList.add("d-none");
-    loginSection.classList.remove("d-none");
-    btnLogout.classList.add("d-none");
+    dashboardSection.classList.add("hidden");
+    loginSection.classList.remove("hidden");
+    btnLogout.classList.add("hidden");
     if (myChart) {
       myChart.destroy();
       myChart = null;
@@ -171,19 +171,19 @@ function startDatabaseListener(uid) {
     const data = snapshot.val();
     if (data) {
       if (data.suhu !== undefined)
-        valSuhu.innerHTML = `${data.suhu}<span class="fs-4">°C</span>`;
+        valSuhu.innerHTML = `${data.suhu}<span class="data-unit">°C</span>`;
       if (data.amonia !== undefined)
-        valAmonia.innerHTML = `${data.amonia}<span class="fs-4"> PPM</span>`;
+        valAmonia.innerHTML = `${data.amonia}<span class="data-unit"> PPM</span>`;
 
       if (data.mode !== undefined) {
         currentModeState = data.mode;
         modeSwitch.checked = currentModeState === 1;
         if (currentModeState === 1) {
           modeLabel.innerText = "Mode: MANUAL";
-          modeLabel.className = "form-check-label fw-bold text-danger";
+          modeLabel.className = "mode-label manual-mode";
         } else {
           modeLabel.innerText = "Mode: OTOMATIS";
-          modeLabel.className = "form-check-label fw-bold text-primary";
+          modeLabel.className = "mode-label auto-mode";
         }
       }
 
@@ -191,14 +191,14 @@ function startDatabaseListener(uid) {
         currentKipasState = data.kipas;
         if (currentKipasState === 1) {
           statusKipas.innerText = "MENYALA";
-          statusKipas.className = "mb-3 text-status-on";
+          statusKipas.className = "status-text text-status-on";
           btnKipas.innerText = "Matikan Kipas";
-          btnKipas.className = "btn btn-danger w-100 fw-bold";
+          btnKipas.className = "btn btn-destructive btn-large w-full";
         } else {
           statusKipas.innerText = "MATI";
-          statusKipas.className = "mb-3 text-status-off";
+          statusKipas.className = "status-text text-status-off";
           btnKipas.innerText = "Nyalakan Kipas";
-          btnKipas.className = "btn btn-success w-100 fw-bold";
+          btnKipas.className = "btn btn-primary btn-large w-full";
         }
         btnKipas.disabled = currentModeState === 0;
       }
@@ -207,14 +207,14 @@ function startDatabaseListener(uid) {
         currentSprayerState = data.sprayer;
         if (currentSprayerState === 1) {
           statusSprayer.innerText = "MENYALA";
-          statusSprayer.className = "mb-3 text-status-on";
+          statusSprayer.className = "status-text text-status-on";
           btnSprayer.innerText = "Matikan Sprayer";
-          btnSprayer.className = "btn btn-danger w-100 fw-bold";
+          btnSprayer.className = "btn btn-destructive btn-large w-full";
         } else {
           statusSprayer.innerText = "MATI";
-          statusSprayer.className = "mb-3 text-status-off";
+          statusSprayer.className = "status-text text-status-off";
           btnSprayer.innerText = "Nyalakan Sprayer";
-          btnSprayer.className = "btn btn-success w-100 fw-bold";
+          btnSprayer.className = "btn btn-primary btn-large w-full";
         }
         btnSprayer.disabled = currentModeState === 0;
       }

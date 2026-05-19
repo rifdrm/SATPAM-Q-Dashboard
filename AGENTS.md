@@ -85,4 +85,3 @@ Seluruh aplikasi hanya terdiri dari **3 file inti**:
 - Menggunakan Bootstrap classes di kode produksi/final.
 - Mengabaikan mobile experience.
 - Menambah fitur baru tanpa mempertimbangkan performa & kesederhanaan.
-
