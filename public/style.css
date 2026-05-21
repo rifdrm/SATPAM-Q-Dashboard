@@ -222,7 +222,7 @@ h6 {
 
 .data-value {
     font-family: var(--font-heading);
-    font-size: 36px; /* Display style */
+    font-size: clamp(28px, 6vw, 36px); /* Responsive font size */
     font-weight: 700;
     line-height: 1.2;
     letter-spacing: 0.02em;
@@ -231,14 +231,14 @@ h6 {
 
 .data-unit {
     font-family: var(--font-body);
-    font-size: 20px;
+    font-size: clamp(16px, 4vw, 20px);
     font-weight: 400;
     color: var(--color-neutral-text-light);
 }
 
 .chart-wrapper {
     position: relative;
-    height: 300px;
+    height: clamp(250px, 50vh, 400px); /* Height scales with viewport */
     width: 100%;
 }
 
@@ -318,6 +318,7 @@ h6 {
 /* 6. COMPONENTS - INPUTS */
 .form-group {
     margin-bottom: var(--space-4);
+    text-align: left; /* Ensure labels align left in centered cards */
 }
 
 .form-group label {

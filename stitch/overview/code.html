@@ -1,0 +1,402 @@
+<!DOCTYPE html>
+
+<html class="h-full bg-background antialiased" lang="en" style=""><head>
+<meta charset="utf-8"/>
+<meta content="width=device-width, initial-scale=1.0" name="viewport"/>
+<title>SATPAM-Q Dashboard</title>
+<script src="https://cdn.tailwindcss.com?plugins=forms,container-queries"></script>
+<link href="https://fonts.googleapis.com" rel="preconnect"/>
+<link crossorigin="" href="https://fonts.gstatic.com" rel="preconnect"/>
+<link href="https://fonts.googleapis.com/css2?family=Merriweather:wght@400;700&amp;family=Raleway:wght@400;500;600&amp;display=swap" rel="stylesheet"/>
+<link href="https://fonts.googleapis.com/css2?family=Material+Symbols+Outlined:wght,FILL@100..700,0..1&amp;display=swap" rel="stylesheet"/>
+<script id="tailwind-config">
+        tailwind.config = {
+            darkMode: "class",
+            theme: {
+                extend: {
+                    colors: {
+                        "inverse-primary": "#8bd79b", "info": "#0E7490", "on-primary-fixed-variant": "#005226", "warning": "#CA8A04", "surface-bright": "#fff8f4", "on-secondary": "#ffffff", "background": "#FAFAF5", "on-surface-variant": "#404940", "on-error": "#ffffff", "tertiary-fixed-dim": "#f7ba8b", "on-tertiary-fixed-variant": "#663d18", "surface-container": "#f4ece8", "surface-tint": "#1f6c3a", "tertiary-container": "#7b4e28", "on-background": "#1e1b19", "tertiary": "#603713", "secondary": "#486738", "on-error-container": "#93000a", "on-secondary-container": "#4c6b3c", "border-medium": "#D6D3D1", "inverse-surface": "#33302d", "on-surface": "#1e1b19", "on-tertiary": "#ffffff", "on-primary-fixed": "#00210b", "on-tertiary-container": "#ffc395", "tertiary-fixed": "#ffdcc3", "surface-container-highest": "#e8e1dd", "surface-container-lowest": "#ffffff", "error": "#B91C1C", "outline": "#707a6f", "eco-certified-bg": "#DCFCE7", "on-tertiary-fixed": "#2f1500", "primary": "#004c22", "surface-container-high": "#eee7e2", "outline-variant": "#bfc9bd", "secondary-container": "#c6eab0", "on-primary-container": "#93e0a2", "secondary-fixed-dim": "#add198", "on-secondary-fixed": "#062100", "on-primary": "#ffffff", "error-container": "#ffdad6", "surface-container-low": "#faf2ed", "secondary-fixed": "#c9edb2", "surface": "#FFFFFF", "primary-fixed-dim": "#8bd79b", "text-main": "#1C1917", "inverse-on-surface": "#f7efeb", "eco-certified-border": "#86EFAC", "surface-dim": "#e0d9d4", "primary-fixed": "#a6f4b5", "on-secondary-fixed-variant": "#314e23", "surface-variant": "#e8e1dd", "primary-container": "#166534", "border-subtle": "#E7E5E4", "success": "#166534"
+                    },
+                    borderRadius: {
+                        "DEFAULT": "0.25rem", "lg": "0.5rem", "xl": "0.75rem", "full": "9999px"
+                    },
+                    spacing: {
+                        "base": "8px", "xl": "24px", "xs": "4px", "5xl": "96px", "4xl": "64px", "sm": "8px", "lg": "16px", "3xl": "48px", "2xl": "32px", "md": "12px"
+                    },
+                    fontFamily: {
+                        "display": ["Merriweather"], "headline": ["Merriweather"], "caption": ["Raleway"], "overline": ["Raleway"], "subhead": ["Merriweather"], "body": ["Raleway"], "body-sm": ["Raleway"], "body-lg": ["Raleway"]
+                    },
+                    fontSize: {
+                        "display": ["36px", { "lineHeight": "1.2", "letterSpacing": "0.02em", "fontWeight": "700" }],
+                        "headline": ["28px", { "lineHeight": "1.3", "letterSpacing": "0.01em", "fontWeight": "700" }],
+                        "caption": ["12px", { "lineHeight": "1.4", "letterSpacing": "0.02em", "fontWeight": "500" }],
+                        "overline": ["11px", { "lineHeight": "1.5", "letterSpacing": "0.08em", "fontWeight": "600" }],
+                        "subhead": ["20px", { "lineHeight": "1.4", "fontWeight": "400" }],
+                        "body": ["16px", { "lineHeight": "1.6", "letterSpacing": "0.01em", "fontWeight": "400" }],
+                        "body-sm": ["14px", { "lineHeight": "1.5", "letterSpacing": "0.01em", "fontWeight": "400" }],
+                        "body-lg": ["18px", { "lineHeight": "1.6", "letterSpacing": "0.01em", "fontWeight": "400" }]
+                    }
+                }
+            }
+        }
+    </script>
+<style>
+        .material-symbols-outlined {
+            font-variation-settings: 'FILL' 0, 'wght' 400, 'GRAD' 0, 'opsz' 24;
+        }
+        .material-symbols-outlined.filled {
+            font-variation-settings: 'FILL' 1;
+        }
+        
+        /* Custom Toggle Switch Styles */
+        .toggle-checkbox:checked {
+            right: 0;
+            border-color: #166534;
+        }
+        .toggle-checkbox:checked + .toggle-label {
+            background-color: #166534;
+        }
+        .toggle-checkbox:disabled + .toggle-label {
+            background-color: #D6D3D1;
+            opacity: 0.5;
+        }
+    </style>
+<script src="https://cdn.jsdelivr.net/npm/chart.js"></script>
+</head>
+<body class="flex h-full overflow-hidden text-on-surface">
+<!-- SideNavBar -->
+<nav class="hidden md:flex flex-col h-screen fixed left-0 top-0 bg-surface-container-low dark:bg-surface-container-highest h-full w-64 border-r border-medium border-r-2 border-medium z-20">
+<div class="p-xl border-b border-subtle">
+<h1 class="font-display text-headline text-primary dark:text-inverse-primary mb-sm">SATPAM-Q</h1>
+<p class="font-body text-body-sm text-on-surface-variant">Quail Monitoring System</p>
+</div>
+<div class="flex-1 overflow-y-auto py-lg">
+<ul class="space-y-sm px-sm">
+<li class="">
+<a class="flex items-center gap-md border-l-4 border-primary bg-secondary-container text-on-secondary-container font-bold px-md py-sm" href="#">
+<span class="material-symbols-outlined">sensors</span>
+<span class="font-headline text-subhead">Overview</span>
+</a>
+</li>
+<li class="">
+<a class="flex items-center gap-md text-on-surface-variant hover:bg-surface-container-high px-md py-sm transition-colors active:opacity-80" href="#">
+<span class="material-symbols-outlined">show_chart</span>
+<span class="font-headline text-subhead">Analytics</span>
+</a>
+</li>
+</ul>
+</div>
+<div class="p-xl border-t border-subtle"><div class="flex items-center gap-md mb-lg p-sm rounded-lg bg-surface-container-high">
+<div class="w-10 h-10 rounded-full bg-primary-container flex items-center justify-center text-on-primary-container">
+<span class="material-symbols-outlined">person</span>
+</div>
+<div class="flex-1 min-w-0">
+<p class="font-headline text-body-sm font-bold text-on-surface truncate">John Doe</p>
+<p class="font-body text-caption text-on-surface-variant truncate">Farm Manager</p>
+</div>
+</div>
+<ul class="space-y-sm">
+<li class="">
+<a class="flex items-center gap-md text-on-surface-variant hover:text-primary transition-colors py-xs" href="#">
+<span class="material-symbols-outlined">logout</span>
+<span class="font-body text-body-sm">Logout</span>
+</a>
+</li>
+</ul>
+</div>
+</nav>
+<!-- Main Content Wrapper -->
+<div class="flex-1 flex flex-col h-screen md:ml-64 overflow-hidden w-full">
+<!-- TopNavBar -->
+<header class="bg-background dark:bg-background w-full border-b border-medium border-b-2 border-medium z-10 shrink-0">
+<div class="flex justify-between items-center px-lg py-md w-full max-w-7xl mx-auto">
+<div class="flex items-center gap-md md:hidden">
+<button class="text-primary p-sm hover:bg-surface-container-low transition-colors rounded">
+<span class="material-symbols-outlined">menu</span>
+</button>
+<h1 class="font-display text-headline font-bold text-primary dark:text-inverse-primary">SATPAM-Q</h1>
+</div>
+<div class="hidden md:block">
+<h2 class="font-headline text-subhead text-on-surface">Dashboard Overview</h2>
+</div>
+<div class="flex items-center gap-md">
+<div class="hidden sm:flex items-center gap-sm mr-md bg-eco-certified-bg border border-eco-certified-border px-md py-xs rounded">
+<div class="w-2 h-2 rounded-full bg-success"></div>
+<span class="font-caption text-success">System Online</span>
+</div>
+<button class="text-primary hover:bg-surface-container-low transition-colors px-md py-sm rounded flex items-center gap-xs font-body font-semibold cursor-pointer" onclick="document.getElementById('export-modal').classList.remove('hidden')">
+<span class="material-symbols-outlined">download</span>
+<span class="">Export Data</span>
+</button>
+</div>
+</div>
+</header>
+<!-- Scrollable Canvas -->
+<main class="flex-1 overflow-y-auto p-xl md:p-2xl pb-5xl w-full">
+<div class="max-w-7xl mx-auto space-y-2xl">
+<!-- Sensor Bento Grid -->
+<section class="grid grid-cols-1 md:grid-cols-2 gap-xl">
+<!-- Temperature Card -->
+<div class="bg-surface border border-subtle border-b-2 border-b-medium rounded p-xl hover:border-outline transition-colors relative overflow-hidden group">
+<div class="absolute top-0 right-0 p-lg opacity-10 group-hover:opacity-20 transition-opacity">
+<span class="material-symbols-outlined text-[100px] filled text-warning">thermostat</span>
+</div>
+<div class="flex justify-between items-start mb-lg relative z-10">
+<div>
+<h3 class="font-subhead text-on-surface-variant flex items-center gap-sm">
+<span class="material-symbols-outlined text-warning">thermostat</span>
+                                    Coop Temperature
+                                </h3>
+</div>
+<span class="bg-surface-container border border-warning text-warning font-caption px-md py-xs rounded">Warning</span>
+</div>
+<div class="relative z-10">
+<div class="flex items-baseline gap-sm">
+<span class="font-display text-[48px] text-on-surface">32.4</span>
+<span class="font-subhead text-on-surface-variant">°C</span>
+</div>
+<p class="font-body-sm text-on-surface-variant mt-sm">Target: 28-30 °C. Cooling recommended.</p>
+</div>
+<div class="mt-xl h-2 w-full bg-surface-container-highest rounded-full overflow-hidden relative z-10">
+<div class="h-full bg-warning w-[85%] rounded-full"></div>
+</div>
+</div>
+<!-- Ammonia Card -->
+<div class="bg-surface border border-subtle border-b-2 border-b-medium rounded p-xl hover:border-outline transition-colors relative overflow-hidden group">
+<div class="absolute top-0 right-0 p-lg opacity-10 group-hover:opacity-20 transition-opacity">
+<span class="material-symbols-outlined text-[100px] filled text-success">air</span>
+</div>
+<div class="flex justify-between items-start mb-lg relative z-10">
+<div>
+<h3 class="font-subhead text-on-surface-variant flex items-center gap-sm">
+<span class="material-symbols-outlined text-info">air</span>
+                                    Ammonia (NH3)
+                                </h3>
+</div>
+<span class="bg-eco-certified-bg border border-eco-certified-border text-success font-caption px-md py-xs rounded">Optimal</span>
+</div>
+<div class="relative z-10">
+<div class="flex items-baseline gap-sm">
+<span class="font-display text-[48px] text-on-surface">12.5</span>
+<span class="font-subhead text-on-surface-variant">PPM</span>
+</div>
+<p class="font-body-sm text-on-surface-variant mt-sm">Target: &lt; 20 PPM. Safe limits.</p>
+</div>
+<div class="mt-xl h-2 w-full bg-surface-container-highest rounded-full overflow-hidden relative z-10">
+<div class="h-full bg-success w-[30%] rounded-full"></div>
+</div>
+</div>
+</section>
+<!-- Actuator Control Panel -->
+<section class="bg-surface border border-subtle border-b-2 border-b-medium rounded p-xl">
+<div class="flex flex-col sm:flex-row justify-between items-start sm:items-center mb-xl gap-lg">
+<div>
+<h3 class="font-headline text-subhead mb-xs">Environment Controls</h3>
+<p class="font-body-sm text-on-surface-variant">Manage ventilation and humidity systems.</p>
+</div>
+<!-- Auto/Manual Master Switch -->
+<div class="flex items-center gap-md bg-surface-container-low p-sm rounded border border-subtle">
+<span class="font-body-sm text-on-surface-variant" id="mode-text">Auto Mode Active</span>
+<div class="relative inline-block w-12 mr-2 align-middle select-none transition duration-200 ease-in">
+<input checked="" class="toggle-checkbox absolute block w-6 h-6 rounded-full bg-white border-4 appearance-none cursor-pointer z-10 top-0 left-0 transition-all duration-300" id="auto-mode-toggle" name="toggle" type="checkbox"/>
+<label class="toggle-label block overflow-hidden h-6 rounded-full bg-gray-300 cursor-pointer transition-colors duration-300" for="auto-mode-toggle"></label>
+</div>
+</div>
+</div>
+<div class="grid grid-cols-1 sm:grid-cols-2 gap-lg">
+<!-- Exhaust Fan -->
+<div class="border border-subtle rounded p-lg flex justify-between items-center bg-surface-container-lowest opacity-60" id="fan-control-card">
+<div class="flex items-center gap-lg">
+<div class="bg-primary-container text-on-primary-container p-md rounded">
+<span class="material-symbols-outlined">mode_fan</span>
+</div>
+<div>
+<h4 class="font-subhead text-on-surface">Exhaust Fans</h4>
+<p class="font-body-sm text-on-surface-variant">Currently running at 100%</p>
+</div>
+</div>
+<div class="relative inline-block w-12 mr-2 align-middle select-none">
+<input checked="" class="toggle-checkbox absolute block w-6 h-6 rounded-full bg-white border-4 appearance-none z-10 top-0 left-0 transition-all duration-300 manual-control" disabled="" type="checkbox"/>
+<label class="toggle-label block overflow-hidden h-6 rounded-full bg-gray-300 transition-colors duration-300"></label>
+</div>
+</div>
+<!-- Mist Sprayer -->
+<div class="border border-subtle rounded p-lg flex justify-between items-center bg-surface-container-lowest opacity-60" id="mist-control-card">
+<div class="flex items-center gap-lg">
+<div class="bg-surface-variant text-on-surface-variant p-md rounded">
+<span class="material-symbols-outlined">water_drop</span>
+</div>
+<div>
+<h4 class="font-subhead text-on-surface">Mist Sprayers</h4>
+<p class="font-body-sm text-on-surface-variant">Currently Off</p>
+</div>
+</div>
+<div class="relative inline-block w-12 mr-2 align-middle select-none">
+<input class="toggle-checkbox absolute block w-6 h-6 rounded-full bg-white border-4 appearance-none z-10 top-0 left-0 transition-all duration-300 manual-control" disabled="" type="checkbox"/>
+<label class="toggle-label block overflow-hidden h-6 rounded-full bg-gray-300 transition-colors duration-300"></label>
+</div>
+</div>
+</div>
+</section>
+<!-- Export Data Section -->
+<!-- History Chart -->
+<section class="bg-surface border border-subtle border-b-2 border-b-medium rounded p-xl">
+<div class="flex justify-between items-center mb-xl">
+<h3 class="font-headline text-subhead">24-Hour Trend</h3>
+<button class="flex items-center gap-xs text-primary font-caption hover:underline">
+                            View Full History <span class="material-symbols-outlined text-[16px]">arrow_forward</span>
+</button>
+</div>
+<div class="w-full h-64">
+<canvas id="trendChart"></canvas>
+</div>
+</section>
+</div>
+</main>
+</div>
+<!-- UI Logic Scripts -->
+<script>
+        // Toggle Logic for Auto/Manual
+        const autoToggle = document.getElementById('auto-mode-toggle');
+        const manualControls = document.querySelectorAll('.manual-control');
+        const modeText = document.getElementById('mode-text');
+        const controlCards = [document.getElementById('fan-control-card'), document.getElementById('mist-control-card')];
+
+        autoToggle.addEventListener('change', function() {
+            const isAuto = this.checked;
+            modeText.textContent = isAuto ? 'Auto Mode Active' : 'Manual Override';
+            
+            manualControls.forEach(control => {
+                control.disabled = isAuto;
+                // Visually indicate disabled state via cursor
+                control.style.cursor = isAuto ? 'not-allowed' : 'pointer';
+            });
+
+            controlCards.forEach(card => {
+                if(isAuto) {
+                    card.classList.add('opacity-60');
+                } else {
+                    card.classList.remove('opacity-60');
+                }
+            });
+        });
+
+        // Chart.js Initialization
+        document.addEventListener('DOMContentLoaded', function() {
+            const ctx = document.getElementById('trendChart').getContext('2d');
+            
+            // CSS Variable extraction for Chart colors
+            const primaryColor = '#004c22'; // From config
+            const warningColor = '#CA8A04'; // From config
+            const gridColor = '#E7E5E4'; // border-subtle
+
+            new Chart(ctx, {
+                type: 'line',
+                data: {
+                    labels: ['00:00', '04:00', '08:00', '12:00', '16:00', '20:00', 'Now'],
+                    datasets: [
+                        {
+                            label: 'Temperature (°C)',
+                            data: [26, 25.5, 27, 31, 32.4, 30, 32.4],
+                            borderColor: warningColor,
+                            backgroundColor: warningColor + '20', // Add transparency
+                            borderWidth: 2,
+                            tension: 0.4,
+                            yAxisID: 'y'
+                        },
+                        {
+                            label: 'Ammonia (PPM)',
+                            data: [15, 14, 18, 12, 10, 11, 12.5],
+                            borderColor: primaryColor,
+                            backgroundColor: primaryColor + '20',
+                            borderWidth: 2,
+                            tension: 0.4,
+                            yAxisID: 'y1'
+                        }
+                    ]
+                },
+                options: {
+                    responsive: true,
+                    maintainAspectRatio: false,
+                    plugins: {
+                        legend: {
+                            position: 'bottom',
+                            labels: {
+                                font: {
+                                    family: "'Raleway', sans-serif"
+                                }
+                            }
+                        }
+                    },
+                    scales: {
+                        y: {
+                            type: 'linear',
+                            display: true,
+                            position: 'left',
+                            title: {
+                                display: true,
+                                text: 'Temp °C'
+                            },
+                            grid: {
+                                color: gridColor
+                            }
+                        },
+                        y1: {
+                            type: 'linear',
+                            display: true,
+                            position: 'right',
+                            title: {
+                                display: true,
+                                text: 'Ammonia PPM'
+                            },
+                            grid: {
+                                drawOnChartArea: false, 
+                            }
+                        },
+                        x: {
+                            grid: {
+                                display: false
+                            }
+                        }
+                    }
+                }
+            });
+        });
+
+        // Firebase Placeholder Logic
+        // function initFirebase() { console.log('Firebase initialized'); }
+        // function subscribeToSensors() { /* update DOM values */ }
+        // function updateActuators(state) { /* push to DB */ }
+    </script>
+<div class="fixed inset-0 z-50 flex items-center justify-center p-xl hidden bg-black/50" id="export-modal">
+<div class="bg-surface border border-subtle border-b-2 border-b-medium rounded-xl p-xl max-w-lg w-full shadow-2xl">
+<div class="flex justify-between items-start mb-lg">
+<div>
+<h3 class="font-headline text-subhead mb-xs text-on-surface">Export Report</h3>
+<p class="font-body-sm text-on-surface-variant">Select a date range to download historical data.</p>
+</div>
+<button class="text-on-surface-variant hover:text-error transition-colors" onclick="document.getElementById('export-modal').classList.add('hidden')">
+<span class="material-symbols-outlined">close</span>
+</button>
+</div>
+<div class="space-y-lg">
+<div class="w-full">
+<label class="block font-headline text-body-sm text-on-surface mb-xs" for="modal-export-from">From Date/Time</label>
+<input class="w-full bg-surface border border-border-medium rounded-lg p-sm font-body text-on-surface focus:ring-primary focus:border-primary" id="modal-export-from" type="datetime-local"/>
+</div>
+<div class="w-full">
+<label class="block font-headline text-body-sm text-on-surface mb-xs" for="modal-export-to">To Date/Time</label>
+<input class="w-full bg-surface border border-border-medium rounded-lg p-sm font-body text-on-surface focus:ring-primary focus:border-primary" id="modal-export-to" type="datetime-local"/>
+</div>
+<div class="pt-md flex gap-md">
+<button class="flex-1 border border-border-medium text-on-surface hover:bg-surface-container-low transition-colors font-body font-semibold px-lg py-sm rounded-lg h-[42px]" onclick="document.getElementById('export-modal').classList.add('hidden')">
+          Cancel
+        </button>
+<button class="flex-1 bg-success hover:bg-primary transition-colors text-on-primary font-body font-semibold px-lg py-sm rounded-lg flex items-center justify-center gap-xs h-[42px]">
+<span class="material-symbols-outlined text-[20px]">download</span>
+          Download Report
+        </button>
+</div>
+</div>
+</div>
+</div></body></html>
