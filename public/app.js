@@ -45,6 +45,7 @@ const passwordInput = document.getElementById("password");
 const btnLogin = document.getElementById("btnLogin");
 const loginError = document.getElementById("login-error");
 const btnLogout = document.getElementById("btnLogout");
+const userEmailDisplay = document.getElementById("user-email-display");
 
 // Data Elements
 const valSuhu = document.getElementById("val-suhu");
@@ -102,6 +103,7 @@ btnLogout.addEventListener("click", () => signOut(auth));
 onAuthStateChanged(auth, (user) => {
   if (user) {
     userUid = user.uid;
+    if (userEmailDisplay) userEmailDisplay.innerText = user.email;
     loginSection.classList.add("hidden");
     appLayout.classList.remove("hidden");
     initChart();
