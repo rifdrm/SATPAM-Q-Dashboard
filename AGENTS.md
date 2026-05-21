@@ -1,10 +1,10 @@
 # AGENTS.md - SATPAM-Q Web Dashboard
 
 ## Project Overview
-SATPAM-Q adalah dashboard web minimalis untuk memantau kualitas udara kandang puyuh (suhu & amonia) dan mengendalikan aktuator (kipas & mist sprayer) secara real-time.  
+SATPAM-Q adalah dashboard web yang user-friendly untuk memantau kualitas udara kandang puyuh (suhu & amonia) dan mengendalikan aktuator (kipas & mist sprayer) secara real-time.  
 Teknologi inti: Firebase Authentication + Realtime Database + ESP32 (DHT22 + MQ-135).
 
-Tujuan utama: Sistem yang stabil, responsif, ringan, mudah dibaca, dan aman untuk peternak puyuh.
+Tujuan utama: Sistem yang stabil, responsif, user-friendly, mudah dibaca, dan aman untuk peternak puyuh.
 
 ## Core Architecture (3-File Rule - WAJIB)
 Seluruh aplikasi hanya terdiri dari **3 file inti**:

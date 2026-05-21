@@ -12,16 +12,19 @@ import {
   set,
   query,
   limitToLast,
+  orderByChild,
+  startAt,
+  endAt,
+  get
 } from "https://www.gstatic.com/firebasejs/10.12.0/firebase-database.js";
 
 // =========================================================
-// 1. KONFIGURASI FIREBASE (GANTI DENGAN DATA DARI NOTEPAD)
+// 1. KONFIGURASI FIREBASE
 // =========================================================
 const firebaseConfig = {
   apiKey: "AIzaSyDbcAFV9XL5L6n2ne76u_zy5q_hcFpNnrM",
   authDomain: "satpam-q-app.firebaseapp.com",
-  databaseURL:
-    "https://satpam-q-app-default-rtdb.asia-southeast1.firebasedatabase.app",
+  databaseURL: "https://satpam-q-app-default-rtdb.asia-southeast1.firebasedatabase.app",
   projectId: "satpam-q-app",
   storageBucket: "satpam-q-app.firebasestorage.app",
   messagingSenderId: "108583466155",
@@ -36,30 +39,44 @@ const database = getDatabase(app);
 // 2. REFERENSI ELEMEN ANTARMUKA (DOM)
 // =========================================================
 const loginSection = document.getElementById("login-section");
+const appLayout = document.getElementById("app-layout");
 const emailInput = document.getElementById("email");
 const passwordInput = document.getElementById("password");
 const btnLogin = document.getElementById("btnLogin");
 const loginError = document.getElementById("login-error");
-
-const dashboardSection = document.getElementById("dashboard-section");
 const btnLogout = document.getElementById("btnLogout");
 
+// Data Elements
 const valSuhu = document.getElementById("val-suhu");
 const valAmonia = document.getElementById("val-amonia");
+const badgeSuhu = document.getElementById("badge-suhu");
+const badgeAmonia = document.getElementById("badge-amonia");
+const barSuhu = document.getElementById("bar-suhu");
+const barAmonia = document.getElementById("bar-amonia");
 
+// Control Elements
 const modeSwitch = document.getElementById("mode-switch");
-const modeLabel = document.getElementById("mode-label");
-
+const modeText = document.getElementById("mode-text");
+const toggleKipas = document.getElementById("toggle-kipas");
+const toggleSprayer = document.getElementById("toggle-sprayer");
 const statusKipas = document.getElementById("status-kipas");
-const btnKipas = document.getElementById("btn-kipas");
 const statusSprayer = document.getElementById("status-sprayer");
-const btnSprayer = document.getElementById("btn-sprayer");
+const cardKipas = document.getElementById("card-kipas");
+const cardSprayer = document.getElementById("card-sprayer");
+
+// Export Elements
+const exportModal = document.getElementById("export-modal");
+const btnShowExport = document.getElementById("btn-show-export");
+const btnCloseModal = document.getElementById("btn-close-modal");
+const btnExportCSV = document.getElementById("btn-export-csv");
+const btnExportExcel = document.getElementById("btn-export-excel");
+const btnExportPDF = document.getElementById("btn-export-pdf");
 
 let currentModeState = 0;
 let currentKipasState = 0;
 let currentSprayerState = 0;
 let userUid = null;
-let myChart = null; // Menyimpan objek grafik
+let myChart = null; 
 
 // =========================================================
 // 3. LOGIKA AUTENTIKASI
@@ -75,8 +92,7 @@ btnLogin.addEventListener("click", () => {
     .catch((error) => {
       btnLogin.innerText = "Masuk Dashboard";
       btnLogin.disabled = false;
-      loginError.innerText =
-        "Gagal masuk: Periksa kembali email dan kata sandi Anda.";
+      loginError.innerText = "Gagal masuk: Periksa kembali email dan kata sandi Anda.";
       loginError.classList.remove("hidden");
     });
 });
@@ -87,12 +103,8 @@ onAuthStateChanged(auth, (user) => {
   if (user) {
     userUid = user.uid;
     loginSection.classList.add("hidden");
-    dashboardSection.classList.remove("hidden");
-    btnLogout.classList.remove("hidden");
-
-    // Inisialisasi Grafik Kosong Pertama Kali
+    appLayout.classList.remove("hidden");
     initChart();
-    // Mulai Dengar Data Database
     startDatabaseListener(userUid);
   } else {
     userUid = null;
@@ -100,13 +112,12 @@ onAuthStateChanged(auth, (user) => {
     btnLogin.disabled = false;
     emailInput.value = "";
     passwordInput.value = "";
-    dashboardSection.classList.add("hidden");
+    appLayout.classList.add("hidden");
     loginSection.classList.remove("hidden");
-    btnLogout.classList.add("hidden");
     if (myChart) {
       myChart.destroy();
       myChart = null;
-    } // Hapus grafik saat logout
+    }
   }
 });
 
@@ -115,36 +126,34 @@ onAuthStateChanged(auth, (user) => {
 // =========================================================
 function initChart() {
   const ctx = document.getElementById("historyChart").getContext("2d");
-
-  // Menerapkan font Raleway dan warna teks global untuk Chart.js
   Chart.defaults.font.family = "'Raleway', sans-serif";
-  Chart.defaults.color = "#57534E"; // var(--color-neutral-text-light)
+  Chart.defaults.color = "#57534E"; 
 
   myChart = new Chart(ctx, {
     type: "line",
     data: {
-      labels: [], // Sumbu X (Waktu Jam:Menit)
+      labels: [], 
       datasets: [
         {
           label: "Suhu (°C)",
           data: [],
-          borderColor: "#A47148", // GreenLeaf Tertiary (Clay)
-          backgroundColor: "rgba(164, 113, 72, 0.1)",
+          borderColor: "#CA8A04", 
+          backgroundColor: "rgba(202, 138, 4, 0.1)",
           borderWidth: 2,
           tension: 0.3,
           yAxisID: "y-suhu",
-          pointBackgroundColor: "#A47148",
+          pointBackgroundColor: "#CA8A04",
           pointRadius: 3,
         },
         {
           label: "Amonia (PPM)",
           data: [],
-          borderColor: "#86A873", // GreenLeaf Secondary (Sage)
-          backgroundColor: "rgba(134, 168, 115, 0.1)",
+          borderColor: "#004c22", 
+          backgroundColor: "rgba(0, 76, 34, 0.1)",
           borderWidth: 2,
           tension: 0.3,
           yAxisID: "y-amonia",
-          pointBackgroundColor: "#86A873",
+          pointBackgroundColor: "#004c22",
           pointRadius: 3,
         },
       ],
@@ -152,19 +161,11 @@ function initChart() {
     options: {
       responsive: true,
       maintainAspectRatio: false,
-      interaction: {
-        mode: "index",
-        intersect: false,
-      },
+      interaction: { mode: "index", intersect: false },
       plugins: {
-        legend: {
-          labels: {
-            usePointStyle: true,
-            boxWidth: 8,
-          },
-        },
+        legend: { position: 'bottom' },
         tooltip: {
-          backgroundColor: "#1C1917", // var(--color-neutral-text)
+          backgroundColor: "#1C1917",
           titleFont: { family: "'Raleway', sans-serif", size: 13 },
           bodyFont: { family: "'Raleway', sans-serif", size: 13 },
           padding: 12,
@@ -173,26 +174,16 @@ function initChart() {
         },
       },
       scales: {
-        x: {
-          grid: {
-            color: "#E7E5E4", // var(--color-neutral-divider)
-            drawBorder: false,
-          },
-        },
+        x: { grid: { display: false } },
         "y-suhu": {
-          type: "linear",
-          position: "left",
+          type: "linear", position: "left",
           title: { display: true, text: "Suhu (°C)", font: { weight: 600 } },
-          grid: {
-            color: "#E7E5E4",
-            drawBorder: false,
-          },
+          grid: { color: "#E7E5E4" },
         },
         "y-amonia": {
-          type: "linear",
-          position: "right",
+          type: "linear", position: "right",
           title: { display: true, text: "Amonia (PPM)", font: { weight: 600 } },
-          grid: { drawOnChartArea: false }, // Agar garis grid tidak bertumpuk
+          grid: { drawOnChartArea: false }, 
         },
       },
     },
@@ -200,67 +191,78 @@ function initChart() {
 }
 
 // =========================================================
-// 5. LOGIKA DATABASE (REAL-TIME & HISTORICAL QUERY)
+// 5. LOGIKA DATABASE (REAL-TIME & HISTORICAL)
 // =========================================================
 function startDatabaseListener(uid) {
   const dbRef = ref(database, "UsersData/" + uid);
 
-  // --- LISTENER 1: Data Tunggal Real-Time ---
   onValue(dbRef, (snapshot) => {
     const data = snapshot.val();
     if (data) {
-      if (data.suhu !== undefined)
-        valSuhu.innerHTML = `${data.suhu}<span class="data-unit">°C</span>`;
-      if (data.amonia !== undefined)
-        valAmonia.innerHTML = `${data.amonia}<span class="data-unit"> PPM</span>`;
+      if (data.suhu !== undefined) {
+        valSuhu.innerText = data.suhu;
+        const progressSuhu = Math.min((data.suhu / 50) * 100, 100);
+        barSuhu.style.width = `${progressSuhu}%`;
+        
+        if(data.suhu > 27) {
+            badgeSuhu.innerText = "Warning";
+            badgeSuhu.className = "badge badge-warning";
+            barSuhu.className = "progress-bar bg-warning";
+        } else {
+            badgeSuhu.innerText = "Optimal";
+            badgeSuhu.className = "badge badge-success";
+            barSuhu.className = "progress-bar bg-success";
+        }
+      }
+
+      if (data.amonia !== undefined) {
+        valAmonia.innerText = data.amonia;
+        const progressAmonia = Math.min((data.amonia / 100) * 100, 100);
+        barAmonia.style.width = `${progressAmonia}%`;
+
+        if(data.amonia > 20) {
+            badgeAmonia.innerText = "Warning";
+            badgeAmonia.className = "badge badge-warning";
+            barAmonia.className = "progress-bar bg-warning";
+        } else {
+            badgeAmonia.innerText = "Optimal";
+            badgeAmonia.className = "badge badge-success";
+            barAmonia.className = "progress-bar bg-success";
+        }
+      }
 
       if (data.mode !== undefined) {
         currentModeState = data.mode;
         modeSwitch.checked = currentModeState === 1;
-        if (currentModeState === 1) {
-          modeLabel.innerText = "Mode: MANUAL";
-          modeLabel.className = "mode-label manual-mode";
+        modeText.innerText = currentModeState === 1 ? "Mode: MANUAL" : "Mode: OTOMATIS";
+        
+        // Atur status aktif/nonaktif dari toggle aktuator
+        toggleKipas.disabled = currentModeState === 0;
+        toggleSprayer.disabled = currentModeState === 0;
+
+        if (currentModeState === 0) {
+            cardKipas.classList.add("opacity-60");
+            cardSprayer.classList.add("opacity-60");
         } else {
-          modeLabel.innerText = "Mode: OTOMATIS";
-          modeLabel.className = "mode-label auto-mode";
+            cardKipas.classList.remove("opacity-60");
+            cardSprayer.classList.remove("opacity-60");
         }
       }
 
       if (data.kipas !== undefined) {
         currentKipasState = data.kipas;
-        if (currentKipasState === 1) {
-          statusKipas.innerText = "MENYALA";
-          statusKipas.className = "chip chip-on";
-          btnKipas.innerText = "Matikan Kipas";
-          btnKipas.className = "btn btn-destructive btn-large w-full";
-        } else {
-          statusKipas.innerText = "MATI";
-          statusKipas.className = "chip chip-off";
-          btnKipas.innerText = "Nyalakan Kipas";
-          btnKipas.className = "btn btn-primary btn-large w-full";
-        }
-        btnKipas.disabled = currentModeState === 0;
+        toggleKipas.checked = currentKipasState === 1;
+        statusKipas.innerText = currentKipasState === 1 ? "Sedang Menyala" : "Mati";
       }
 
       if (data.sprayer !== undefined) {
         currentSprayerState = data.sprayer;
-        if (currentSprayerState === 1) {
-          statusSprayer.innerText = "MENYALA";
-          statusSprayer.className = "chip chip-on";
-          btnSprayer.innerText = "Matikan Sprayer";
-          btnSprayer.className = "btn btn-destructive btn-large w-full";
-        } else {
-          statusSprayer.innerText = "MATI";
-          statusSprayer.className = "chip chip-off";
-          btnSprayer.innerText = "Nyalakan Sprayer";
-          btnSprayer.className = "btn btn-primary btn-large w-full";
-        }
-        btnSprayer.disabled = currentModeState === 0;
+        toggleSprayer.checked = currentSprayerState === 1;
+        statusSprayer.innerText = currentSprayerState === 1 ? "Sedang Menyala" : "Mati";
       }
     }
   });
 
-  // --- LISTENER 2: Riwayat Data (Dibatasi 20 Terakhir) ---
   const historyRef = ref(database, "UsersData/" + uid + "/history");
   const recentHistoryQuery = query(historyRef, limitToLast(20));
 
@@ -272,27 +274,19 @@ function startDatabaseListener(uid) {
 
       snapshot.forEach((childSnapshot) => {
         const log = childSnapshot.val();
-
-        // Mengubah Epoch Timestamp Unix ke Format Jam:Menit lokal komputer
         if (log.timestamp) {
           const date = new Date(log.timestamp * 1000);
-          const hours = String(date.getHours()).padStart(2, "0");
-          const minutes = String(date.getMinutes()).padStart(2, "0");
-          timeLabels.push(`${hours}:${minutes}`);
+          timeLabels.push(`${String(date.getHours()).padStart(2, "0")}:${String(date.getMinutes()).padStart(2, "0")}`);
         } else {
           timeLabels.push("--:--");
         }
-
         suhuData.push(log.suhu || 0);
         amoniaData.push(log.amonia || 0);
       });
 
-      // Menyuntikkan array data baru ke dalam Chart.js
       myChart.data.labels = timeLabels;
       myChart.data.datasets[0].data = suhuData;
       myChart.data.datasets[1].data = amoniaData;
-
-      // Segarkan visual grafik
       myChart.update();
     }
   });
@@ -305,24 +299,159 @@ modeSwitch.addEventListener("change", (e) => {
   if (userUid) {
     const newMode = e.target.checked ? 1 : 0;
     set(ref(database, "UsersData/" + userUid + "/mode"), newMode);
-    modeLabel.innerText = "Mengubah...";
+    modeText.innerText = "Mengubah...";
   }
 });
 
-btnKipas.addEventListener("click", () => {
+toggleKipas.addEventListener("change", (e) => {
   if (userUid && currentModeState === 1) {
-    const newState = currentKipasState === 1 ? 0 : 1;
+    const newState = e.target.checked ? 1 : 0;
     set(ref(database, "UsersData/" + userUid + "/kipas"), newState);
-    btnKipas.disabled = true;
-    btnKipas.innerText = "Mengirim...";
+    statusKipas.innerText = "Mengirim perintah...";
+  } else {
+    e.target.checked = !e.target.checked; // Revert jika dilarang
   }
 });
 
-btnSprayer.addEventListener("click", () => {
+toggleSprayer.addEventListener("change", (e) => {
   if (userUid && currentModeState === 1) {
-    const newState = currentSprayerState === 1 ? 0 : 1;
+    const newState = e.target.checked ? 1 : 0;
     set(ref(database, "UsersData/" + userUid + "/sprayer"), newState);
-    btnSprayer.disabled = true;
-    btnSprayer.innerText = "Mengirim...";
+    statusSprayer.innerText = "Mengirim perintah...";
+  } else {
+    e.target.checked = !e.target.checked;
   }
 });
+
+// =========================================================
+// 7. LOGIKA EXPORT DATA (CSV, EXCEL, PDF)
+// =========================================================
+btnShowExport.addEventListener("click", () => exportModal.classList.remove("hidden"));
+btnCloseModal.addEventListener("click", () => exportModal.classList.add("hidden"));
+
+// Tutup modal jika klik di luar box modal
+exportModal.addEventListener("click", (e) => {
+    if(e.target === exportModal) exportModal.classList.add("hidden");
+});
+
+btnExportCSV.addEventListener("click", () => handleExport('csv'));
+btnExportExcel.addEventListener("click", () => handleExport('excel'));
+btnExportPDF.addEventListener("click", () => handleExport('pdf'));
+
+async function handleExport(type) {
+    const fromVal = document.getElementById("modal-export-from").value;
+    const toVal = document.getElementById("modal-export-to").value;
+
+    if (!fromVal || !toVal) {
+        alert("Mohon pilih rentang tanggal dari dan sampai terlebih dahulu.");
+        return;
+    }
+
+    const startTimestamp = Math.floor(new Date(fromVal).getTime() / 1000);
+    const endTimestamp = Math.floor(new Date(toVal).getTime() / 1000);
+
+    const historyRef = ref(database, "UsersData/" + userUid + "/history");
+    const exportQuery = query(historyRef, orderByChild('timestamp'), startAt(startTimestamp), endAt(endTimestamp));
+
+    const originalBtnText = {
+        'csv': btnExportCSV.innerHTML,
+        'excel': btnExportExcel.innerHTML,
+        'pdf': btnExportPDF.innerHTML
+    };
+    
+    // Set Loading State
+    if(type === 'csv') btnExportCSV.innerText = "Memproses...";
+    if(type === 'excel') btnExportExcel.innerText = "Memproses...";
+    if(type === 'pdf') btnExportPDF.innerText = "Memproses...";
+
+    try {
+        const snapshot = await get(exportQuery);
+        if (!snapshot.exists()) {
+            alert("Tidak ada data riwayat yang ditemukan pada rentang tanggal tersebut.");
+            restoreBtnState(type, originalBtnText);
+            return;
+        }
+
+        const dataArray = [];
+        snapshot.forEach((childSnapshot) => {
+            const log = childSnapshot.val();
+            const dateStr = new Date(log.timestamp * 1000).toLocaleString('id-ID');
+            dataArray.push({
+                "Waktu": dateStr,
+                "Suhu (°C)": log.suhu || 0,
+                "Amonia (PPM)": log.amonia || 0
+            });
+        });
+
+        if (type === 'csv') exportCSV(dataArray);
+        else if (type === 'excel') exportExcel(dataArray);
+        else if (type === 'pdf') exportPDF(dataArray);
+
+        exportModal.classList.add("hidden");
+
+    } catch (error) {
+        console.error("Error fetching export data:", error);
+        alert("Terjadi kesalahan saat mengambil data eksport dari Firebase.");
+    } finally {
+        restoreBtnState(type, originalBtnText);
+    }
+}
+
+function restoreBtnState(type, originalTextObj) {
+    if(type === 'csv') btnExportCSV.innerHTML = originalTextObj.csv;
+    if(type === 'excel') btnExportExcel.innerHTML = originalTextObj.excel;
+    if(type === 'pdf') btnExportPDF.innerHTML = originalTextObj.pdf;
+}
+
+function exportCSV(data) {
+    const header = Object.keys(data[0]).join(",");
+    const rows = data.map(obj => Object.values(obj).join(",")).join("\n");
+    const csvContent = "data:text/csv;charset=utf-8," + encodeURIComponent(header + "\n" + rows);
+    
+    const link = document.createElement("a");
+    link.setAttribute("href", csvContent);
+    link.setAttribute("download", "Laporan_SATPAM_Q.csv");
+    document.body.appendChild(link);
+    link.click();
+    link.remove();
+}
+
+function exportExcel(data) {
+    if (typeof XLSX === 'undefined') {
+        alert("Library SheetJS gagal dimuat. Harap periksa koneksi internet."); 
+        return;
+    }
+    const ws = XLSX.utils.json_to_sheet(data);
+    const wb = XLSX.utils.book_new();
+    XLSX.utils.book_append_sheet(wb, ws, "Riwayat");
+    XLSX.writeFile(wb, "Laporan_SATPAM_Q.xlsx");
+}
+
+function exportPDF(data) {
+    if (typeof window.jspdf === 'undefined') {
+        alert("Library jsPDF gagal dimuat. Harap periksa koneksi internet."); 
+        return;
+    }
+    const { jsPDF } = window.jspdf;
+    const doc = new jsPDF();
+
+    doc.setFont("helvetica", "bold");
+    doc.text("Laporan Riwayat Sensor Kandang SATPAM-Q", 14, 15);
+    
+    doc.setFont("helvetica", "normal");
+    doc.setFontSize(10);
+    doc.text(`Waktu Ekspor: ${new Date().toLocaleString('id-ID')}`, 14, 22);
+
+    const tableColumn = Object.keys(data[0]);
+    const tableRows = data.map(obj => Object.values(obj));
+
+    doc.autoTable({
+        head: [tableColumn],
+        body: tableRows,
+        startY: 28,
+        theme: 'grid',
+        headStyles: { fillColor: [0, 76, 34] } // Sesuai warna Primary GreenLeaf
+    });
+
+    doc.save("Laporan_SATPAM_Q.pdf");
+}

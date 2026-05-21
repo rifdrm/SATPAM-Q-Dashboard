@@ -1,144 +1,264 @@
 <!doctype html>
 <html lang="id">
-    <head>
-        <meta charset="UTF-8" />
-        <meta
-            name="viewport"
-            content="width=device-width, initial-scale=1.0, maximum-scale=1.0, user-scalable=no"
-        />
-        <title>SATPAM-Q Dashboard</title>
-        <link rel="preconnect" href="https://fonts.googleapis.com" />
-        <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin />
-        <link
-            href="https://fonts.googleapis.com/css2?family=Fira+Code&family=Merriweather:wght@400;700&family=Raleway:wght@400;500;600;700&display=swap"
-            rel="stylesheet"
-        />
-        <script src="https://cdn.jsdelivr.net/npm/chart.js"></script>
-        <link rel="stylesheet" href="style.css" />
-    </head>
-    <body>
-        <header class="navbar">
-            <div class="container navbar-container">
-                <span class="brand">SATPAM-Q</span>
-                <button id="btnLogout" class="btn btn-ghost btn-small hidden">
+<head>
+    <meta charset="UTF-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=1.0, user-scalable=no" />
+    <title>SATPAM-Q Dashboard</title>
+    
+    <!-- Fonts & Icons -->
+    <link rel="preconnect" href="https://fonts.googleapis.com" />
+    <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin />
+    <link href="https://fonts.googleapis.com/css2?family=Fira+Code&family=Merriweather:wght@400;700&family=Raleway:wght@400;500;600;700&display=swap" rel="stylesheet" />
+    <link href="https://fonts.googleapis.com/css2?family=Material+Symbols+Outlined:wght,FILL@100..700,0..1&display=swap" rel="stylesheet" />
+    
+    <!-- External Libraries -->
+    <script src="https://cdn.jsdelivr.net/npm/chart.js"></script>
+    <script src="https://cdn.jsdelivr.net/npm/xlsx/dist/xlsx.full.min.js"></script>
+    <script src="https://cdnjs.cloudflare.com/ajax/libs/jspdf/2.5.1/jspdf.umd.min.js"></script>
+    <script src="https://cdnjs.cloudflare.com/ajax/libs/jspdf-autotable/3.5.28/jspdf.plugin.autotable.min.js"></script>
+    
+    <!-- Custom Stylesheet -->
+    <link rel="stylesheet" href="style.css" />
+</head>
+<body class="bg-background text-on-surface">
+
+    <!-- LOGIN SECTION -->
+    <section id="login-section" class="login-wrapper">
+        <div class="card login-card shadow-lg">
+            <h2 class="font-display text-center text-primary mb-xl">SATPAM-Q Akses</h2>
+            <div class="form-group mb-lg">
+                <label for="email" class="font-body text-body-sm font-semibold">Alamat Email</label>
+                <input type="email" class="input-text w-full mt-xs" id="email" placeholder="nama@email.com" />
+            </div>
+            <div class="form-group mb-xl">
+                <label for="password" class="font-body text-body-sm font-semibold">Kata Sandi</label>
+                <input type="password" class="input-text w-full mt-xs" id="password" placeholder="********" />
+            </div>
+            <button id="btnLogin" class="btn btn-primary btn-large w-full">Masuk Dashboard</button>
+            <div id="login-error" class="text-error mt-md text-center text-body-sm hidden"></div>
+        </div>
+    </section>
+
+    <!-- APP LAYOUT (Hidden until logged in) -->
+    <div id="app-layout" class="app-layout hidden">
+        
+        <!-- SIDEBAR (Desktop) -->
+        <nav class="sidebar bg-surface-container-low border-r border-medium z-30">
+            <div class="sidebar-header p-xl border-b border-subtle">
+                <h1 class="font-display text-headline text-primary mb-xs">SATPAM-Q</h1>
+                <p class="font-body text-body-sm text-on-surface-variant">Quail Monitoring System</p>
+            </div>
+            <div class="sidebar-nav py-lg">
+                <a href="#" class="nav-item active">
+                    <span class="material-symbols-outlined icon-filled">sensors</span>
+                    <span class="font-subhead">Overview</span>
+                </a>
+                <a href="#" class="nav-item inactive">
+                    <span class="material-symbols-outlined">show_chart</span>
+                    <span class="font-subhead">Analytics</span>
+                </a>
+            </div>
+            <div class="sidebar-footer p-xl border-t border-subtle">
+                <div class="user-profile mb-lg p-sm bg-surface-container-high rounded-md">
+                    <div class="user-avatar bg-primary-container text-on-primary-container">
+                        <span class="material-symbols-outlined">person</span>
+                    </div>
+                    <div class="user-info">
+                        <p class="font-body-sm font-bold truncate text-on-surface">Peternak</p>
+                        <p class="font-caption text-on-surface-variant truncate">Manager Kandang</p>
+                    </div>
+                </div>
+                <button id="btnLogout" class="btn btn-ghost btn-small w-full flex-start">
+                    <span class="material-symbols-outlined">logout</span>
                     Keluar
                 </button>
             </div>
-        </header>
+        </nav>
 
-        <main class="container main-content">
-            <!-- LOGIN SECTION -->
-            <section id="login-section" class="login-container">
-                <div class="card login-card">
-                    <h2 class="card-title text-center mb-4">Akses Peternak</h2>
-                    <div class="form-group">
-                        <label for="email">Alamat Email</label>
-                        <input
-                            type="email"
-                            class="input-text"
-                            id="email"
-                            placeholder="nama@email.com"
-                        />
+        <!-- MAIN WRAPPER -->
+        <div class="main-wrapper">
+            
+            <!-- TOPBAR -->
+            <header class="topbar bg-background border-b border-medium z-20">
+                <div class="topbar-container">
+                    <div class="topbar-left">
+                        <button class="menu-btn text-primary">
+                            <span class="material-symbols-outlined">menu</span>
+                        </button>
+                        <h1 class="font-display text-subhead font-bold text-primary mobile-only">SATPAM-Q</h1>
+                        <h2 class="font-headline text-subhead desktop-only">Dashboard Overview</h2>
                     </div>
-                    <div class="form-group">
-                        <label for="password">Kata Sandi</label>
-                        <input
-                            type="password"
-                            class="input-text"
-                            id="password"
-                            placeholder="********"
-                        />
+                    <div class="topbar-right">
+                        <div class="system-status desktop-only">
+                            <div class="status-dot bg-success"></div>
+                            <span class="font-caption text-success">System Online</span>
+                        </div>
+                        <button id="btn-show-export" class="btn btn-ghost text-primary flex-center gap-xs">
+                            <span class="material-symbols-outlined">download</span>
+                            <span class="font-body-sm font-semibold">Export Data</span>
+                        </button>
                     </div>
-                    <button
-                        id="btnLogin"
-                        class="btn btn-primary btn-large w-full"
-                    >
-                        Masuk Dashboard
+                </div>
+            </header>
+
+            <!-- DASHBOARD CONTENT -->
+            <main id="dashboard-section" class="dashboard-content p-xl md-p-2xl">
+                <div class="max-w-7xl mx-auto space-y-2xl">
+                    
+                    <!-- SENSOR BENTO GRID -->
+                    <section class="grid grid-cols-1 md-grid-cols-2 gap-xl">
+                        <!-- Temperature Card -->
+                        <div class="card sensor-card group relative overflow-hidden">
+                            <div class="card-bg-icon text-warning group-hover-opacity">
+                                <span class="material-symbols-outlined icon-huge icon-filled">thermostat</span>
+                            </div>
+                            <div class="flex-between mb-lg relative z-10">
+                                <h3 class="font-subhead text-on-surface-variant flex-start gap-sm">
+                                    <span class="material-symbols-outlined text-warning">thermostat</span>
+                                    Suhu Kandang
+                                </h3>
+                                <span id="badge-suhu" class="badge badge-warning">Memuat</span>
+                            </div>
+                            <div class="relative z-10">
+                                <div class="flex-baseline gap-sm">
+                                    <span id="val-suhu" class="font-display text-huge text-on-surface">--</span>
+                                    <span class="font-subhead text-on-surface-variant">°C</span>
+                                </div>
+                                <p class="font-body-sm text-on-surface-variant mt-sm">Target: < 27°C. Suhu ruangan.</p>
+                            </div>
+                            <div class="progress-bar-container mt-xl relative z-10">
+                                <div id="bar-suhu" class="progress-bar bg-warning" style="width: 0%"></div>
+                            </div>
+                        </div>
+
+                        <!-- Ammonia Card -->
+                        <div class="card sensor-card group relative overflow-hidden">
+                            <div class="card-bg-icon text-success group-hover-opacity">
+                                <span class="material-symbols-outlined icon-huge icon-filled">air</span>
+                            </div>
+                            <div class="flex-between mb-lg relative z-10">
+                                <h3 class="font-subhead text-on-surface-variant flex-start gap-sm">
+                                    <span class="material-symbols-outlined text-info">air</span>
+                                    Amonia (NH3)
+                                </h3>
+                                <span id="badge-amonia" class="badge badge-success">Memuat</span>
+                            </div>
+                            <div class="relative z-10">
+                                <div class="flex-baseline gap-sm">
+                                    <span id="val-amonia" class="font-display text-huge text-on-surface">--</span>
+                                    <span class="font-subhead text-on-surface-variant">PPM</span>
+                                </div>
+                                <p class="font-body-sm text-on-surface-variant mt-sm">Target: < 20 PPM. Batas aman.</p>
+                            </div>
+                            <div class="progress-bar-container mt-xl relative z-10">
+                                <div id="bar-amonia" class="progress-bar bg-success" style="width: 0%"></div>
+                            </div>
+                        </div>
+                    </section>
+
+                    <!-- ACTUATOR CONTROL PANEL -->
+                    <section class="card control-panel p-xl">
+                        <div class="flex-between-col md-flex-between-row mb-xl gap-lg">
+                            <div>
+                                <h3 class="font-headline text-subhead mb-xs">Environment Controls</h3>
+                                <p class="font-body-sm text-on-surface-variant">Kendali ventilasi dan sprayer air.</p>
+                            </div>
+                            <!-- Master Switch Auto/Manual -->
+                            <div class="master-switch-wrapper bg-surface-container-low border border-subtle p-sm rounded-md flex-center gap-md">
+                                <span id="mode-text" class="font-body-sm text-on-surface-variant">Mode: OTOMATIS</span>
+                                <div class="toggle-wrapper">
+                                    <input type="checkbox" id="mode-switch" class="toggle-checkbox" />
+                                    <label for="mode-switch" class="toggle-slider"></label>
+                                </div>
+                            </div>
+                        </div>
+
+                        <div class="grid grid-cols-1 sm-grid-cols-2 gap-lg">
+                            <!-- Exhaust Fan -->
+                            <div id="card-kipas" class="control-item border border-subtle rounded-md p-lg flex-between bg-surface-container-lowest opacity-60 transition-all">
+                                <div class="flex-center gap-lg">
+                                    <div class="icon-box bg-primary-container text-on-primary-container">
+                                        <span class="material-symbols-outlined">mode_fan</span>
+                                    </div>
+                                    <div>
+                                        <h4 class="font-subhead text-on-surface">Kipas Exhaust</h4>
+                                        <p id="status-kipas" class="font-body-sm text-on-surface-variant">Memuat...</p>
+                                    </div>
+                                </div>
+                                <div class="toggle-wrapper">
+                                    <input type="checkbox" id="toggle-kipas" class="toggle-checkbox actuator-toggle" disabled />
+                                    <label for="toggle-kipas" class="toggle-slider"></label>
+                                </div>
+                            </div>
+
+                            <!-- Mist Sprayer -->
+                            <div id="card-sprayer" class="control-item border border-subtle rounded-md p-lg flex-between bg-surface-container-lowest opacity-60 transition-all">
+                                <div class="flex-center gap-lg">
+                                    <div class="icon-box bg-surface-variant text-on-surface-variant">
+                                        <span class="material-symbols-outlined">water_drop</span>
+                                    </div>
+                                    <div>
+                                        <h4 class="font-subhead text-on-surface">Mist Sprayer</h4>
+                                        <p id="status-sprayer" class="font-body-sm text-on-surface-variant">Memuat...</p>
+                                    </div>
+                                </div>
+                                <div class="toggle-wrapper">
+                                    <input type="checkbox" id="toggle-sprayer" class="toggle-checkbox actuator-toggle" disabled />
+                                    <label for="toggle-sprayer" class="toggle-slider"></label>
+                                </div>
+                            </div>
+                        </div>
+                    </section>
+
+                    <!-- HISTORY CHART -->
+                    <section class="card chart-panel p-xl">
+                        <div class="flex-between mb-xl">
+                            <h3 class="font-headline text-subhead">Trend Riwayat (Real-Time)</h3>
+                        </div>
+                        <div class="chart-wrapper h-64 w-full">
+                            <canvas id="historyChart"></canvas>
+                        </div>
+                    </section>
+
+                </div>
+            </main>
+        </div>
+    </div>
+
+    <!-- EXPORT MODAL -->
+    <div id="export-modal" class="modal-overlay hidden">
+        <div class="modal-content card shadow-2xl p-xl max-w-lg w-full">
+            <div class="flex-between mb-lg">
+                <div>
+                    <h3 class="font-headline text-subhead mb-xs text-on-surface">Export Laporan</h3>
+                    <p class="font-body-sm text-on-surface-variant">Pilih rentang tanggal untuk mengunduh data riwayat.</p>
+                </div>
+                <button id="btn-close-modal" class="btn-icon text-on-surface-variant hover-text-error">
+                    <span class="material-symbols-outlined">close</span>
+                </button>
+            </div>
+            
+            <div class="space-y-lg mt-xl">
+                <div class="form-group">
+                    <label for="modal-export-from" class="font-headline text-body-sm text-on-surface block mb-xs">Dari Tanggal/Waktu</label>
+                    <input type="datetime-local" id="modal-export-from" class="input-text w-full" />
+                </div>
+                <div class="form-group mt-md">
+                    <label for="modal-export-to" class="font-headline text-body-sm text-on-surface block mb-xs">Sampai Tanggal/Waktu</label>
+                    <input type="datetime-local" id="modal-export-to" class="input-text w-full" />
+                </div>
+                
+                <div class="export-actions pt-md mt-xl grid grid-cols-1 sm-grid-cols-3 gap-md">
+                    <button id="btn-export-csv" class="btn btn-secondary flex-center gap-xs">CSV</button>
+                    <button id="btn-export-excel" class="btn btn-secondary flex-center gap-xs">Excel</button>
+                    <button id="btn-export-pdf" class="btn btn-primary flex-center gap-xs">
+                        <span class="material-symbols-outlined text-[18px]">picture_as_pdf</span> PDF
                     </button>
-                    <div
-                        id="login-error"
-                        class="text-error mt-12 text-center small hidden"
-                    ></div>
                 </div>
-            </section>
+            </div>
+        </div>
+    </div>
 
-            <!-- DASHBOARD SECTION -->
-            <section id="dashboard-section" class="dashboard-container hidden">
-                <div class="section-header">
-                    <h3>Data Real-Time Kandang</h3>
-                </div>
-                <div class="grid-2">
-                    <div class="card text-center data-card">
-                        <p class="overline text-muted">SUHU KANDANG</p>
-                        <div class="data-value" id="val-suhu">
-                            --<span class="data-unit">°C</span>
-                        </div>
-                    </div>
-                    <div class="card text-center data-card">
-                        <p class="overline text-muted">KADAR AMONIA (MQ-135)</p>
-                        <div class="data-value" id="val-amonia">
-                            --<span class="data-unit"> PPM</span>
-                        </div>
-                    </div>
-                </div>
-
-                <div class="section-header mt-48">
-                    <h3>Grafik Analisis Riwayat (Kondisi Terakhir)</h3>
-                </div>
-                <div class="card chart-card">
-                    <div class="chart-wrapper">
-                        <canvas id="historyChart"></canvas>
-                    </div>
-                </div>
-
-                <div class="control-header mt-48 flex-between">
-                    <h3>Kendali Aktuator</h3>
-                    <div class="switch-wrapper">
-                        <span id="mode-label" class="mode-label auto-mode"
-                            >Mode: OTOMATIS</span
-                        >
-                        <label class="switch">
-                            <input type="checkbox" id="mode-switch" />
-                            <span class="slider round"></span>
-                        </label>
-                    </div>
-                </div>
-
-                <div class="grid-2">
-                    <div class="card text-center control-card">
-                        <p class="overline text-muted">
-                            Sirkulasi Udara (Kipas)
-                        </p>
-                        <h3 id="status-kipas" class="status-text text-muted">
-                            Memuat...
-                        </h3>
-                        <button
-                            id="btn-kipas"
-                            class="btn btn-secondary btn-large w-full"
-                            disabled
-                        >
-                            Mohon Tunggu
-                        </button>
-                    </div>
-                    <div class="card text-center control-card">
-                        <p class="overline text-muted">
-                            Penurun Amonia (Mist Sprayer)
-                        </p>
-                        <h3 id="status-sprayer" class="status-text text-muted">
-                            Memuat...
-                        </h3>
-                        <button
-                            id="btn-sprayer"
-                            class="btn btn-secondary btn-large w-full"
-                            disabled
-                        >
-                            Mohon Tunggu
-                        </button>
-                    </div>
-                </div>
-            </section>
-        </main>
-
-        <script type="module" src="app.js"></script>
-    </body>
+    <script type="module" src="app.js"></script>
+</body>
 </html>
