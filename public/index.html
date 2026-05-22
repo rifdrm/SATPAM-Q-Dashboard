@@ -1,25 +1,31 @@
 <!doctype html>
 <html lang="id">
+
 <head>
     <meta charset="UTF-8" />
     <meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=1.0, user-scalable=no" />
     <title>SATPAM-Q Dashboard</title>
-    
+    <link rel="icon" type="image/png" href="assets/quail.png" />
+
     <!-- Fonts & Icons -->
     <link rel="preconnect" href="https://fonts.googleapis.com" />
     <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin />
-    <link href="https://fonts.googleapis.com/css2?family=Fira+Code&family=Merriweather:wght@400;700&family=Raleway:wght@400;500;600;700&display=swap" rel="stylesheet" />
-    <link href="https://fonts.googleapis.com/css2?family=Material+Symbols+Outlined:wght,FILL@100..700,0..1&display=swap" rel="stylesheet" />
-    
+    <link
+        href="https://fonts.googleapis.com/css2?family=Fira+Code&family=Merriweather:wght@400;700&family=Raleway:wght@400;500;600;700&display=swap"
+        rel="stylesheet" />
+    <link href="https://fonts.googleapis.com/css2?family=Material+Symbols+Outlined:wght,FILL@100..700,0..1&display=swap"
+        rel="stylesheet" />
+
     <!-- External Libraries -->
     <script src="https://cdn.jsdelivr.net/npm/chart.js"></script>
     <script src="https://cdn.jsdelivr.net/npm/xlsx/dist/xlsx.full.min.js"></script>
     <script src="https://cdnjs.cloudflare.com/ajax/libs/jspdf/2.5.1/jspdf.umd.min.js"></script>
     <script src="https://cdnjs.cloudflare.com/ajax/libs/jspdf-autotable/3.5.28/jspdf.plugin.autotable.min.js"></script>
-    
+
     <!-- Custom Stylesheet -->
     <link rel="stylesheet" href="style.css" />
 </head>
+
 <body class="bg-background text-on-surface">
 
     <!-- LOGIN SECTION -->
@@ -29,20 +35,24 @@
             <div class="flex-center" style="flex-direction: column; margin-bottom: var(--space-xl);">
                 <div class="avatar-container" id="quail-avatar">
                     <!-- Quail SVG -->
-                    <svg class="w-full h-full overflow-visible" fill="none" viewbox="0 0 200 200" xmlns="http://www.w3.org/2000/svg">
+                    <svg class="w-full h-full overflow-visible" fill="none" viewbox="0 0 200 200"
+                        xmlns="http://www.w3.org/2000/svg">
                         <defs>
                             <filter id="speckle-texture">
                                 <feturbulence basefrequency="0.8" numoctaves="4" type="fractalNoise"></feturbulence>
-                                <fecolormatrix type="matrix" values="0 0 0 0 0.4 0 0 0 0 0.25 0 0 0 0 0.1 0 0 0 0.2 0"></fecolormatrix>
+                                <fecolormatrix type="matrix" values="0 0 0 0 0.4 0 0 0 0 0.25 0 0 0 0 0.1 0 0 0 0.2 0">
+                                </fecolormatrix>
                                 <fecomposite in2="SourceGraphic" operator="in"></fecomposite>
                             </filter>
                         </defs>
                         <g id="body-group">
                             <circle cx="100" cy="120" fill="#D2B48C" r="70"></circle>
                             <circle cx="100" cy="120" fill="#8B4513" filter="url(#speckle-texture)" r="70"></circle>
-                            <path d="M100 50 C 60 120, 140 120, 100 185 C 70 185, 30 140, 100 50" fill="#F5F5DC" opacity="0.6"></path>
+                            <path d="M100 50 C 60 120, 140 120, 100 185 C 70 185, 30 140, 100 50" fill="#F5F5DC"
+                                opacity="0.6"></path>
                         </g>
-                        <path d="M100 50 C 90 20, 130 10, 110 40" fill="none" stroke="#8B4513" stroke-linecap="round" stroke-width="6"></path>
+                        <path d="M100 50 C 90 20, 130 10, 110 40" fill="none" stroke="#8B4513" stroke-linecap="round"
+                            stroke-width="6"></path>
                         <path class="quail-beak" d="M90 125 L110 125 L100 140 Z" fill="#CA8A04"></path>
                         <g class="quail-eye">
                             <circle cx="80" cy="110" fill="#1e1b19" r="8"></circle>
@@ -52,42 +62,52 @@
                         </g>
                         <g class="quail-wing-l">
                             <path d="M35 100 C 15 130, 20 180, 50 180 C 55 150, 45 110, 35 100 Z" fill="#A0522D"></path>
-                            <path d="M35 100 C 15 130, 20 180, 50 180 C 55 150, 45 110, 35 100 Z" fill="#8B4513" filter="url(#speckle-texture)"></path>
+                            <path d="M35 100 C 15 130, 20 180, 50 180 C 55 150, 45 110, 35 100 Z" fill="#8B4513"
+                                filter="url(#speckle-texture)"></path>
                         </g>
                         <g class="quail-wing-r">
-                            <path d="M165 100 C 185 130, 180 180, 150 180 C 145 150, 155 110, 165 100 Z" fill="#A0522D"></path>
-                            <path d="M165 100 C 185 130, 180 180, 150 180 C 145 150, 155 110, 165 100 Z" fill="#8B4513" filter="url(#speckle-texture)"></path>
+                            <path d="M165 100 C 185 130, 180 180, 150 180 C 145 150, 155 110, 165 100 Z" fill="#A0522D">
+                            </path>
+                            <path d="M165 100 C 185 130, 180 180, 150 180 C 145 150, 155 110, 165 100 Z" fill="#8B4513"
+                                filter="url(#speckle-texture)"></path>
                         </g>
                     </svg>
                 </div>
                 <h1 class="font-display text-primary mb-xs" style="font-size: 24px; font-weight: 700;">Welcome Back</h1>
-                <p class="font-body text-body-sm text-on-surface-variant text-center" style="max-width: 280px;">Sign in to SATPAM-Q to manage your farm.</p>
+                <p class="font-body text-body-sm text-on-surface-variant text-center" style="max-width: 280px;">Sign in
+                    to SATPAM-Q to manage your farm.</p>
             </div>
-            
+
             <!-- Form -->
             <div id="login-form">
                 <div class="form-group mb-lg">
                     <label for="email" class="font-overline text-overline text-on-surface">Email Address</label>
-                    <input autocomplete="email" class="input-text w-full mt-xs" id="email" name="email" placeholder="manager@farm.com" required type="email"/>
+                    <input autocomplete="email" class="input-text w-full mt-xs" id="email" name="email"
+                        placeholder="manager@farm.com" required type="email" />
                 </div>
-                
+
                 <div class="form-group mb-md">
                     <label for="password" class="font-overline text-overline text-on-surface">Password</label>
                     <div style="position: relative; width: 100%;">
-                        <input class="input-text w-full mt-xs" id="password" name="password" placeholder="••••••••" required type="password" style="padding-right: 40px;"/>
-                        <button aria-label="Toggle password visibility" id="toggle-password" type="button" class="btn-icon" style="position: absolute; right: 8px; top: 50%; transform: translateY(-35%); border: none; background: transparent; cursor: pointer; color: var(--color-on-surface-variant);">
+                        <input class="input-text w-full mt-xs" id="password" name="password" placeholder="••••••••"
+                            required type="password" style="padding-right: 40px;" />
+                        <button aria-label="Toggle password visibility" id="toggle-password" type="button"
+                            class="btn-icon"
+                            style="position: absolute; right: 8px; top: 50%; transform: translateY(-35%); border: none; background: transparent; cursor: pointer; color: var(--color-on-surface-variant);">
                             <span class="material-symbols-outlined" id="toggle-icon">visibility</span>
                         </button>
                     </div>
                 </div>
-                
+
                 <div class="flex-start mb-xl mt-sm">
                     <label class="flex-center gap-sm cursor-pointer group">
-                        <input type="checkbox" style="width: 16px; height: 16px; cursor: pointer; accent-color: var(--color-primary);" />
-                        <span class="font-body text-body-sm text-on-surface-variant" style="user-select: none;">Remember me</span>
+                        <input type="checkbox"
+                            style="width: 16px; height: 16px; cursor: pointer; accent-color: var(--color-primary);" />
+                        <span class="font-body text-body-sm text-on-surface-variant" style="user-select: none;">Remember
+                            me</span>
                     </label>
                 </div>
-                
+
                 <button id="btnLogin" class="btn btn-primary btn-large w-full flex-center gap-sm">
                     Login
                     <span class="material-symbols-outlined" style="font-size: 20px;">arrow_forward</span>
@@ -99,7 +119,7 @@
 
     <!-- APP LAYOUT (Hidden until logged in) -->
     <div id="app-layout" class="app-layout hidden">
-        
+
         <!-- SIDEBAR OVERLAY (Mobile) -->
         <div id="sidebar-overlay" class="sidebar-overlay"></div>
 
@@ -137,7 +157,7 @@
 
         <!-- MAIN WRAPPER -->
         <div class="main-wrapper">
-            
+
             <!-- TOPBAR -->
             <header class="topbar bg-background border-b border-medium z-20">
                 <div class="topbar-container">
@@ -164,7 +184,7 @@
             <!-- DASHBOARD CONTENT (Overview) -->
             <main id="overview-section" class="dashboard-content p-xl md-p-2xl">
                 <div class="max-w-7xl mx-auto space-y-2xl">
-                    
+
                     <!-- SENSOR BENTO GRID -->
                     <section class="grid grid-cols-1 md-grid-cols-2 gap-xl">
                         <!-- Temperature Card -->
@@ -224,7 +244,8 @@
                                 <p class="font-body-sm text-on-surface-variant">Kendali ventilasi dan sprayer air.</p>
                             </div>
                             <!-- Master Switch Auto/Manual -->
-                            <div class="master-switch-wrapper bg-surface-container-low border border-subtle p-sm rounded-md flex-center gap-md">
+                            <div
+                                class="master-switch-wrapper bg-surface-container-low border border-subtle p-sm rounded-md flex-center gap-md">
                                 <span id="mode-text" class="font-body-sm text-on-surface-variant">Mode: OTOMATIS</span>
                                 <div class="toggle-wrapper">
                                     <input type="checkbox" id="mode-switch" class="toggle-checkbox" />
@@ -235,7 +256,8 @@
 
                         <div class="grid grid-cols-1 sm-grid-cols-2 gap-lg">
                             <!-- Exhaust Fan -->
-                            <div id="card-kipas" class="control-item border border-subtle rounded-md p-lg flex-between bg-surface-container-lowest opacity-60 transition-all">
+                            <div id="card-kipas"
+                                class="control-item border border-subtle rounded-md p-lg flex-between bg-surface-container-lowest opacity-60 transition-all">
                                 <div class="flex-center gap-lg">
                                     <div class="icon-box bg-primary-container text-on-primary-container">
                                         <span class="material-symbols-outlined">mode_fan</span>
@@ -246,24 +268,28 @@
                                     </div>
                                 </div>
                                 <div class="toggle-wrapper">
-                                    <input type="checkbox" id="toggle-kipas" class="toggle-checkbox actuator-toggle" disabled />
+                                    <input type="checkbox" id="toggle-kipas" class="toggle-checkbox actuator-toggle"
+                                        disabled />
                                     <label for="toggle-kipas" class="toggle-slider"></label>
                                 </div>
                             </div>
 
                             <!-- Mist Sprayer -->
-                            <div id="card-sprayer" class="control-item border border-subtle rounded-md p-lg flex-between bg-surface-container-lowest opacity-60 transition-all">
+                            <div id="card-sprayer"
+                                class="control-item border border-subtle rounded-md p-lg flex-between bg-surface-container-lowest opacity-60 transition-all">
                                 <div class="flex-center gap-lg">
                                     <div class="icon-box bg-surface-variant text-on-surface-variant">
                                         <span class="material-symbols-outlined">water_drop</span>
                                     </div>
                                     <div>
                                         <h4 class="font-subhead text-on-surface">Mist Sprayer</h4>
-                                        <p id="status-sprayer" class="font-body-sm text-on-surface-variant">Memuat...</p>
+                                        <p id="status-sprayer" class="font-body-sm text-on-surface-variant">Memuat...
+                                        </p>
                                     </div>
                                 </div>
                                 <div class="toggle-wrapper">
-                                    <input type="checkbox" id="toggle-sprayer" class="toggle-checkbox actuator-toggle" disabled />
+                                    <input type="checkbox" id="toggle-sprayer" class="toggle-checkbox actuator-toggle"
+                                        disabled />
                                     <label for="toggle-sprayer" class="toggle-slider"></label>
                                 </div>
                             </div>
@@ -286,11 +312,13 @@
             <!-- ANALYTICS CONTENT (Heatmap) -->
             <main id="analytics-section" class="dashboard-content p-xl md-p-2xl hidden">
                 <div class="max-w-7xl mx-auto">
-                    
+
                     <header class="flex-between-row flex-wrap gap-md mb-2xl border-b border-medium pb-lg">
                         <div>
-                            <h2 class="font-display text-subhead md-text-display font-bold text-primary">Kesehatan Kandang</h2>
-                            <p class="font-body text-body-sm text-on-surface-variant mt-xs">Riwayat pemantauan harian. Warna merah menandakan hari kritis yang membutuhkan evaluasi.</p>
+                            <h2 class="font-display text-subhead md-text-display font-bold text-primary">Kesehatan
+                                Kandang</h2>
+                            <p class="font-body text-body-sm text-on-surface-variant mt-xs">Riwayat pemantauan harian.
+                                Warna merah menandakan hari kritis yang membutuhkan evaluasi.</p>
                         </div>
                     </header>
 
@@ -299,11 +327,15 @@
                         <div class="flex-between-col md-flex-between-row gap-xl mb-2xl">
                             <!-- Month Nav -->
                             <div class="flex-center gap-md w-full md-w-auto">
-                                <button id="btn-prev-month" class="btn-icon border border-subtle bg-surface-container-low text-on-surface rounded-md">
+                                <button id="btn-prev-month"
+                                    class="btn-icon border border-subtle bg-surface-container-low text-on-surface rounded-md">
                                     <span class="material-symbols-outlined">chevron_left</span>
                                 </button>
-                                <h3 id="heatmap-month-label" class="font-headline text-subhead text-on-surface min-w-[150px] text-center">Memuat...</h3>
-                                <button id="btn-next-month" class="btn-icon border border-subtle bg-surface-container-low text-on-surface rounded-md">
+                                <h3 id="heatmap-month-label"
+                                    class="font-headline text-subhead text-on-surface min-w-[150px] text-center">
+                                    Memuat...</h3>
+                                <button id="btn-next-month"
+                                    class="btn-icon border border-subtle bg-surface-container-low text-on-surface rounded-md">
                                     <span class="material-symbols-outlined">chevron_right</span>
                                 </button>
                             </div>
@@ -339,23 +371,26 @@
             <div class="flex-between mb-lg">
                 <div>
                     <h3 class="font-headline text-subhead mb-xs text-on-surface">Export Laporan</h3>
-                    <p class="font-body-sm text-on-surface-variant">Pilih rentang tanggal untuk mengunduh data riwayat.</p>
+                    <p class="font-body-sm text-on-surface-variant">Pilih rentang tanggal untuk mengunduh data riwayat.
+                    </p>
                 </div>
                 <button id="btn-close-modal" class="btn-icon text-on-surface-variant hover-text-error">
                     <span class="material-symbols-outlined">close</span>
                 </button>
             </div>
-            
+
             <div class="space-y-lg mt-xl">
                 <div class="form-group">
-                    <label for="modal-export-from" class="font-headline text-body-sm text-on-surface block mb-xs">Dari Tanggal/Waktu</label>
+                    <label for="modal-export-from" class="font-headline text-body-sm text-on-surface block mb-xs">Dari
+                        Tanggal/Waktu</label>
                     <input type="datetime-local" id="modal-export-from" class="input-text w-full" />
                 </div>
                 <div class="form-group mt-md">
-                    <label for="modal-export-to" class="font-headline text-body-sm text-on-surface block mb-xs">Sampai Tanggal/Waktu</label>
+                    <label for="modal-export-to" class="font-headline text-body-sm text-on-surface block mb-xs">Sampai
+                        Tanggal/Waktu</label>
                     <input type="datetime-local" id="modal-export-to" class="input-text w-full" />
                 </div>
-                
+
                 <div class="export-actions pt-md mt-xl grid grid-cols-1 sm-grid-cols-3 gap-md">
                     <button id="btn-export-csv" class="btn btn-secondary flex-center gap-xs">CSV</button>
                     <button id="btn-export-excel" class="btn btn-secondary flex-center gap-xs">Excel</button>
@@ -369,4 +404,5 @@
 
     <script type="module" src="app.js"></script>
 </body>
+
 </html>

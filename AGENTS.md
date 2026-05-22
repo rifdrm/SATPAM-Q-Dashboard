@@ -15,7 +15,7 @@ Seluruh aplikasi hanya terdiri dari **3 file inti**:
 **Jangan** tambah file HTML, JS, atau CSS baru kecuali benar-benar diperlukan (misal: helper kecil di folder assets nanti).
 
 ## Referensi Desain UI/UX
-- Ikuti folder ./Stitch/ untuk panduan UI/UX dalam format HTML.
+- Ikuti folder ./Stitch/ untuk panduan UI/UX dalam format HTML.d
 - Selalu ikuti `DESIGN.md` sebagai sumber kebenaran utama untuk tampilan, warna, typography, layout, dan feel.
 - Desain target: minimalis, industrial-farm, jelas, mobile-first, profesional tapi tidak kaku.
 - Prioritas: Kecepatan baca data + kontrol yang jelas (khususnya di HP).
