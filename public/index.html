@@ -24,18 +24,76 @@
 
     <!-- LOGIN SECTION -->
     <section id="login-section" class="login-wrapper">
-        <div class="card login-card shadow-lg">
-            <h2 class="font-display text-center text-primary mb-xl">SATPAM-Q Akses</h2>
-            <div class="form-group mb-lg">
-                <label for="email" class="font-body text-body-sm font-semibold">Alamat Email</label>
-                <input type="email" class="input-text w-full mt-xs" id="email" placeholder="nama@email.com" />
+        <div class="card login-card shadow-lg" style="border-bottom: 3px solid var(--color-neutral-border);">
+            <!-- Header & Avatar Container -->
+            <div class="flex-center" style="flex-direction: column; margin-bottom: var(--space-xl);">
+                <div class="avatar-container" id="quail-avatar">
+                    <!-- Quail SVG -->
+                    <svg class="w-full h-full overflow-visible" fill="none" viewbox="0 0 200 200" xmlns="http://www.w3.org/2000/svg">
+                        <defs>
+                            <filter id="speckle-texture">
+                                <feturbulence basefrequency="0.8" numoctaves="4" type="fractalNoise"></feturbulence>
+                                <fecolormatrix type="matrix" values="0 0 0 0 0.4 0 0 0 0 0.25 0 0 0 0 0.1 0 0 0 0.2 0"></fecolormatrix>
+                                <fecomposite in2="SourceGraphic" operator="in"></fecomposite>
+                            </filter>
+                        </defs>
+                        <g id="body-group">
+                            <circle cx="100" cy="120" fill="#D2B48C" r="70"></circle>
+                            <circle cx="100" cy="120" fill="#8B4513" filter="url(#speckle-texture)" r="70"></circle>
+                            <path d="M100 50 C 60 120, 140 120, 100 185 C 70 185, 30 140, 100 50" fill="#F5F5DC" opacity="0.6"></path>
+                        </g>
+                        <path d="M100 50 C 90 20, 130 10, 110 40" fill="none" stroke="#8B4513" stroke-linecap="round" stroke-width="6"></path>
+                        <path class="quail-beak" d="M90 125 L110 125 L100 140 Z" fill="#CA8A04"></path>
+                        <g class="quail-eye">
+                            <circle cx="80" cy="110" fill="#1e1b19" r="8"></circle>
+                            <circle cx="78" cy="108" fill="#ffffff" r="2"></circle>
+                            <circle cx="120" cy="110" fill="#1e1b19" r="8"></circle>
+                            <circle cx="118" cy="108" fill="#ffffff" r="2"></circle>
+                        </g>
+                        <g class="quail-wing-l">
+                            <path d="M35 100 C 15 130, 20 180, 50 180 C 55 150, 45 110, 35 100 Z" fill="#A0522D"></path>
+                            <path d="M35 100 C 15 130, 20 180, 50 180 C 55 150, 45 110, 35 100 Z" fill="#8B4513" filter="url(#speckle-texture)"></path>
+                        </g>
+                        <g class="quail-wing-r">
+                            <path d="M165 100 C 185 130, 180 180, 150 180 C 145 150, 155 110, 165 100 Z" fill="#A0522D"></path>
+                            <path d="M165 100 C 185 130, 180 180, 150 180 C 145 150, 155 110, 165 100 Z" fill="#8B4513" filter="url(#speckle-texture)"></path>
+                        </g>
+                    </svg>
+                </div>
+                <h1 class="font-display text-primary mb-xs" style="font-size: 24px; font-weight: 700;">Welcome Back</h1>
+                <p class="font-body text-body-sm text-on-surface-variant text-center" style="max-width: 280px;">Sign in to SATPAM-Q to manage your farm.</p>
             </div>
-            <div class="form-group mb-xl">
-                <label for="password" class="font-body text-body-sm font-semibold">Kata Sandi</label>
-                <input type="password" class="input-text w-full mt-xs" id="password" placeholder="********" />
+            
+            <!-- Form -->
+            <div id="login-form">
+                <div class="form-group mb-lg">
+                    <label for="email" class="font-overline text-overline text-on-surface">Email Address</label>
+                    <input autocomplete="email" class="input-text w-full mt-xs" id="email" name="email" placeholder="manager@farm.com" required type="email"/>
+                </div>
+                
+                <div class="form-group mb-md">
+                    <label for="password" class="font-overline text-overline text-on-surface">Password</label>
+                    <div style="position: relative; width: 100%;">
+                        <input class="input-text w-full mt-xs" id="password" name="password" placeholder="••••••••" required type="password" style="padding-right: 40px;"/>
+                        <button aria-label="Toggle password visibility" id="toggle-password" type="button" class="btn-icon" style="position: absolute; right: 8px; top: 50%; transform: translateY(-35%); border: none; background: transparent; cursor: pointer; color: var(--color-on-surface-variant);">
+                            <span class="material-symbols-outlined" id="toggle-icon">visibility</span>
+                        </button>
+                    </div>
+                </div>
+                
+                <div class="flex-start mb-xl mt-sm">
+                    <label class="flex-center gap-sm cursor-pointer group">
+                        <input type="checkbox" style="width: 16px; height: 16px; cursor: pointer; accent-color: var(--color-primary);" />
+                        <span class="font-body text-body-sm text-on-surface-variant" style="user-select: none;">Remember me</span>
+                    </label>
+                </div>
+                
+                <button id="btnLogin" class="btn btn-primary btn-large w-full flex-center gap-sm">
+                    Login
+                    <span class="material-symbols-outlined" style="font-size: 20px;">arrow_forward</span>
+                </button>
+                <div id="login-error" class="text-error mt-md text-center text-body-sm hidden"></div>
             </div>
-            <button id="btnLogin" class="btn btn-primary btn-large w-full">Masuk Dashboard</button>
-            <div id="login-error" class="text-error mt-md text-center text-body-sm hidden"></div>
         </div>
     </section>
 

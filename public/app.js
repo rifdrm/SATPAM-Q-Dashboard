@@ -46,6 +46,9 @@ const btnLogin = document.getElementById("btnLogin");
 const loginError = document.getElementById("login-error");
 const btnLogout = document.getElementById("btnLogout");
 const userEmailDisplay = document.getElementById("user-email-display");
+const avatar = document.getElementById('quail-avatar');
+const toggleBtn = document.getElementById('toggle-password');
+const toggleIcon = document.getElementById('toggle-icon');
 
 // Data Elements
 const valSuhu = document.getElementById("val-suhu");
@@ -98,21 +101,91 @@ let userUid = null;
 let myChart = null; 
 
 // =========================================================
+// 2.5 ANIMASI QUAIL AVATAR
+// =========================================================
+if (emailInput && avatar) {
+  emailInput.addEventListener('focus', () => {
+    avatar.className = 'avatar-container state-look-down';
+    updateEyeTracking();
+  });
+  emailInput.addEventListener('input', updateEyeTracking);
+  emailInput.addEventListener('blur', () => {
+    avatar.className = 'avatar-container';
+    avatar.style.setProperty('--text-length', 0);
+  });
+}
+function updateEyeTracking() {
+  if (!emailInput || !avatar) return;
+  const length = Math.min(emailInput.value.length, 30);
+  avatar.style.setProperty('--text-length', length);
+}
+if (passwordInput && avatar) {
+  passwordInput.addEventListener('focus', () => {
+    if (passwordInput.type === 'password') {
+      avatar.className = 'avatar-container state-hide-eyes';
+    } else {
+      avatar.className = 'avatar-container state-sneak-peek';
+    }
+  });
+  passwordInput.addEventListener('blur', () => {
+    avatar.className = 'avatar-container';
+  });
+}
+if (toggleBtn && passwordInput && toggleIcon && avatar) {
+  toggleBtn.addEventListener('click', () => {
+    if (passwordInput.type === 'password') {
+      passwordInput.type = 'text';
+      toggleIcon.textContent = 'visibility_off';
+      if (document.activeElement === passwordInput) {
+        avatar.className = 'avatar-container state-sneak-peek';
+      }
+    } else {
+      passwordInput.type = 'password';
+      toggleIcon.textContent = 'visibility';
+      if (document.activeElement === passwordInput) {
+        avatar.className = 'avatar-container state-hide-eyes';
+      }
+    }
+  });
+}
+
+// =========================================================
 // 3. LOGIKA AUTENTIKASI
 // =========================================================
 btnLogin.addEventListener("click", () => {
-  const email = emailInput.value;
-  const password = passwordInput.value;
-  btnLogin.innerText = "Memproses...";
+  const email = emailInput.value.trim();
+  const password = passwordInput.value.trim();
+  
+  if (avatar) avatar.className = 'avatar-container';
+  if (avatar) void avatar.offsetWidth; // trigger reflow
+
+  if (!email || !password) {
+    if (avatar) {
+        avatar.classList.add('state-shocked');
+        setTimeout(() => avatar.classList.remove('state-shocked'), 1000);
+    }
+    loginError.innerText = "Email dan kata sandi wajib diisi.";
+    loginError.classList.remove("hidden");
+    return;
+  }
+
+  btnLogin.innerHTML = `Memproses...`;
   btnLogin.disabled = true;
 
   signInWithEmailAndPassword(auth, email, password)
-    .then(() => loginError.classList.add("hidden"))
+    .then(() => {
+        loginError.classList.add("hidden");
+        if (avatar) avatar.classList.add('state-success');
+    })
     .catch((error) => {
-      btnLogin.innerText = "Masuk Dashboard";
+      btnLogin.innerHTML = `Login <span class="material-symbols-outlined text-[20px]">arrow_forward</span>`;
       btnLogin.disabled = false;
       loginError.innerText = "Gagal masuk: Periksa kembali email dan kata sandi Anda.";
       loginError.classList.remove("hidden");
+      if (avatar) {
+          avatar.classList.add('state-shocked');
+          setTimeout(() => avatar.classList.remove('state-shocked'), 1000);
+      }
     });
 });
 
@@ -128,7 +201,7 @@ onAuthStateChanged(auth, (user) => {
     startDatabaseListener(userUid);
   } else {
     userUid = null;
-    btnLogin.innerText = "Masuk Dashboard";
+    btnLogin.innerHTML = `Login <span class="material-symbols-outlined text-[20px]">arrow_forward</span>`;
     btnLogin.disabled = false;
     emailInput.value = "";
     passwordInput.value = "";

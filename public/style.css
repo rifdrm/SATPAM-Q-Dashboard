@@ -250,6 +250,14 @@ body {
 .login-card {
     width: 100%;
     max-width: 400px;
+    padding: var(--space-2xl);
+    background-color: var(--color-bg-surface);
+}
+.avatar-container {
+    width: 128px;
+    height: 128px;
+    position: relative;
+    margin-bottom: var(--space-lg);
 }
 
 .app-layout {
@@ -486,4 +494,77 @@ body {
     }
     .main-wrapper { margin-left: 0; width: 100%; }
     .menu-btn { display: block; }
+}
+
+/* =========================================
+   14. QUAIL AVATAR ANIMATION (LOGIN)
+========================================= */
+#quail-avatar {
+    --text-length: 0;
+    --eye-x: calc(var(--text-length) * 0.5px);
+    --eye-y: 0px;
+    --wing-l-rot: 0deg;
+    --wing-r-rot: 0deg;
+    --wing-l-y: 0px;
+    --wing-r-y: 0px;
+    --beak-scale: 1;
+    transition: all 0.3s cubic-bezier(0.4, 0, 0.2, 1);
+}
+
+.quail-eye {
+    transform: translate(clamp(-10px, var(--eye-x), 10px), var(--eye-y));
+    transition: transform 0.1s ease-out;
+}
+
+.quail-wing-l {
+    transform-origin: 35px 100px;
+    transform: translateY(var(--wing-l-y)) rotate(var(--wing-l-rot));
+    transition: transform 0.4s cubic-bezier(0.68, -0.55, 0.265, 1.55);
+}
+
+.quail-wing-r {
+    transform-origin: 165px 100px;
+    transform: translateY(var(--wing-r-y)) rotate(var(--wing-r-rot));
+    transition: transform 0.4s cubic-bezier(0.68, -0.55, 0.265, 1.55);
+}
+
+.quail-beak {
+    transform-origin: center top;
+    transform: scaleY(var(--beak-scale));
+    transition: transform 0.2s ease-in-out;
+}
+
+/* States */
+#quail-avatar.state-look-down {
+    --eye-y: 6px;
+}
+
+#quail-avatar.state-hide-eyes {
+    --wing-l-rot: -75deg;
+    --wing-r-rot: 75deg;
+    --wing-l-y: 0px;
+    --wing-r-y: 0px;
+    --eye-y: 0px;
+}
+
+#quail-avatar.state-sneak-peek {
+    --wing-l-rot: -75deg;
+    --wing-r-rot: 35deg;
+    --wing-l-y: 0px;
+    --wing-r-y: 0px;
+}
+
+#quail-avatar.state-shocked {
+    --beak-scale: 2.5;
+    --eye-y: -4px;
+}
+
+#quail-avatar.state-success {
+    --eye-y: -2px;
+    animation: bounce 0.5s cubic-bezier(0.36, 0, 0.66, -0.56) forwards;
+}
+
+@keyframes bounce {
+    0%, 100% { transform: translateY(0); }
+    50% { transform: translateY(-15px); }
 }
