@@ -78,6 +78,19 @@ const btnMenu = document.getElementById("btn-menu");
 const sidebar = document.getElementById("sidebar");
 const sidebarOverlay = document.getElementById("sidebar-overlay");
 
+// Analytics & SPA Navigation Elements
+const navOverview = document.getElementById("nav-overview");
+const navAnalytics = document.getElementById("nav-analytics");
+const overviewSection = document.getElementById("overview-section");
+const analyticsSection = document.getElementById("analytics-section");
+
+const btnPrevMonth = document.getElementById("btn-prev-month");
+const btnNextMonth = document.getElementById("btn-next-month");
+const heatmapMonthLabel = document.getElementById("heatmap-month-label");
+const heatmapGrid = document.getElementById("heatmap-grid");
+
+let currentHeatmapDate = new Date();
+
 let currentModeState = 0;
 let currentKipasState = 0;
 let currentSprayerState = 0;
@@ -476,4 +489,172 @@ function exportPDF(data) {
     });
 
     doc.save("Laporan_SATPAM_Q.pdf");
+}
+
+// =========================================================
+// 9. LOGIKA NAVIGASI SPA (SINGLE PAGE APPLICATION)
+// =========================================================
+if (navOverview && navAnalytics && overviewSection && analyticsSection) {
+  navOverview.addEventListener("click", (e) => {
+    e.preventDefault();
+    navOverview.classList.add("active");
+    navOverview.classList.remove("inactive");
+    navAnalytics.classList.add("inactive");
+    navAnalytics.classList.remove("active");
+    
+    overviewSection.classList.remove("hidden");
+    analyticsSection.classList.add("hidden");
+  });
+
+  navAnalytics.addEventListener("click", (e) => {
+    e.preventDefault();
+    navAnalytics.classList.add("active");
+    navAnalytics.classList.remove("inactive");
+    navOverview.classList.add("inactive");
+    navOverview.classList.remove("active");
+    
+    overviewSection.classList.add("hidden");
+    analyticsSection.classList.remove("hidden");
+
+    if (userUid) {
+      renderHeatmapGrid(currentHeatmapDate);
+    }
+  });
+}
+
+// =========================================================
+// 10. LOGIKA HEATMAP BULANAN
+// =========================================================
+function renderHeatmapGrid(dateObj) {
+  if (!userUid || !heatmapMonthLabel || !heatmapGrid) return;
+
+  const year = dateObj.getFullYear();
+  const month = dateObj.getMonth(); // 0-11
+  
+  // Set Label Bulan
+  const monthNames = ["Januari", "Februari", "Maret", "April", "Mei", "Juni", "Juli", "Agustus", "September", "Oktober", "November", "Desember"];
+  heatmapMonthLabel.innerText = `${monthNames[month]} ${year}`;
+
+  // Tentukan Epoch Timestamp (detik) awal dan akhir bulan
+  const firstDay = new Date(year, month, 1);
+  const lastDay = new Date(year, month + 1, 0, 23, 59, 59);
+  
+  const startEpoch = Math.floor(firstDay.getTime() / 1000);
+  const endEpoch = Math.floor(lastDay.getTime() / 1000);
+
+  // Ambil Data Firebase
+  const historyRef = ref(database, "UsersData/" + userUid + "/history");
+  const q = query(historyRef, orderByChild("timestamp"), startAt(startEpoch), endAt(endEpoch));
+  
+  heatmapGrid.innerHTML = `<div class="p-xl text-on-surface-variant col-span-7 text-center">Memuat data kalender...</div>`;
+
+  get(q).then((snapshot) => {
+    const dailyData = {};
+    const totalDays = lastDay.getDate();
+
+    // Inisialisasi object untuk setiap hari
+    for (let i = 1; i <= totalDays; i++) {
+      dailyData[i] = { sumAmonia: 0, count: 0, criticalAlerts: 0 };
+    }
+
+    if (snapshot.exists()) {
+      snapshot.forEach((childSnap) => {
+        const log = childSnap.val();
+        if (log.timestamp && log.amonia !== undefined) {
+          const logDate = new Date(log.timestamp * 1000);
+          const day = logDate.getDate();
+          
+          if (dailyData[day]) {
+            dailyData[day].sumAmonia += log.amonia;
+            dailyData[day].count += 1;
+            if (log.amonia > 25) {
+              dailyData[day].criticalAlerts += 1;
+            }
+          }
+        }
+      });
+    }
+
+    drawCalendar(year, month, totalDays, dailyData, firstDay.getDay());
+  }).catch((err) => {
+    console.error("Gagal memuat data heatmap:", err);
+    heatmapGrid.innerHTML = `<div class="p-md text-error col-span-7">Gagal memuat data dari database.</div>`;
+  });
+}
+
+function drawCalendar(year, month, totalDays, dailyData, startDayOfWeek) {
+  heatmapGrid.innerHTML = "";
+  
+  // startDayOfWeek: 0 = Minggu, 1 = Senin, dst. Di UI kita pakai Minggu(0) sebagai hari pertama
+  for (let i = 0; i < startDayOfWeek; i++) {
+    const emptyCell = document.createElement("div");
+    emptyCell.className = "bg-surface-container-high border-r border-b border-subtle aspect-square";
+    heatmapGrid.appendChild(emptyCell);
+  }
+
+  // Render hari-hari di bulan tersebut
+  for (let d = 1; d <= totalDays; d++) {
+    const data = dailyData[d];
+    let avgPpm = 0;
+    let bgColorClass = "bg-surface-container-high"; // Empty/No data
+    let tooltipStatus = "Tidak ada data";
+
+    if (data.count > 0) {
+      avgPpm = (data.sumAmonia / data.count).toFixed(1);
+      
+      // Logika warna berdasarkan rata-rata & critical alerts
+      if (data.criticalAlerts > 0 || avgPpm > 25) {
+        bgColorClass = "bg-error-container";
+        tooltipStatus = "Kritis";
+      } else if (avgPpm >= 20) {
+        bgColorClass = "bg-warning-container";
+        tooltipStatus = "Peringatan";
+      } else {
+        bgColorClass = "bg-success-container";
+        tooltipStatus = "Sehat";
+      }
+    }
+
+    const cell = document.createElement("div");
+    cell.className = `${bgColorClass} aspect-square relative tooltip-container border-r border-b border-subtle hover:opacity-90 transition-opacity cursor-pointer`;
+    
+    // Teks Tanggal & PPM
+    let innerHtml = `
+      <div class="absolute top-sm left-sm font-caption text-on-surface opacity-60">${d}</div>
+    `;
+    
+    if (data.count > 0) {
+      innerHtml += `
+      <div class="w-full h-full flex-center font-subhead text-on-surface mt-sm">
+          ${Math.round(avgPpm)}<span class="font-caption ml-xs opacity-70">ppm</span>
+      </div>`;
+    } else {
+      innerHtml += `
+      <div class="w-full h-full flex-center font-caption text-on-surface-variant opacity-50 mt-sm">-</div>
+      `;
+    }
+
+    // Tooltip
+    innerHtml += `
+      <div class="tooltip-content text-left">
+          <div class="font-body-sm font-bold border-b border-subtle pb-xs mb-sm">${d} ${heatmapMonthLabel.innerText.split(' ')[0]} ${year}</div>
+          <div class="font-caption flex-between mb-xs"><span>Rata-rata:</span> <span>${data.count > 0 ? avgPpm + ' ppm' : '-'}</span></div>
+          <div class="font-caption flex-between"><span>Status:</span> <span class="${tooltipStatus === 'Kritis' ? 'text-error font-bold' : tooltipStatus === 'Peringatan' ? 'text-warning font-bold' : ''}">${tooltipStatus}</span></div>
+      </div>
+    `;
+
+    cell.innerHTML = innerHtml;
+    heatmapGrid.appendChild(cell);
+  }
+}
+
+if (btnPrevMonth && btnNextMonth) {
+  btnPrevMonth.addEventListener("click", () => {
+    currentHeatmapDate.setMonth(currentHeatmapDate.getMonth() - 1);
+    renderHeatmapGrid(currentHeatmapDate);
+  });
+  btnNextMonth.addEventListener("click", () => {
+    currentHeatmapDate.setMonth(currentHeatmapDate.getMonth() + 1);
+    renderHeatmapGrid(currentHeatmapDate);
+  });
 }

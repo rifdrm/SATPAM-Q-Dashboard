@@ -35,9 +35,12 @@
     --color-on-surface-variant: #404940;
 
     --color-success: #166534;
+    --color-success-container: #dcfce7;
     --color-warning: #ca8a04;
+    --color-warning-container: #fef9c3;
     --color-error: #b91c1c;
     --color-error-hover: #991b1b;
+    --color-error-container: #fee2e2;
     --color-info: #0e7490;
 
     /* Typography */
@@ -113,6 +116,11 @@ body {
 .bg-surface-container-lowest { background-color: var(--color-surface-container-lowest); }
 .bg-surface-container-high { background-color: var(--color-surface-container-high); }
 .bg-surface-variant { background-color: var(--color-surface-variant); }
+.bg-primary-container { background-color: var(--color-primary-container); }
+.bg-success-container { background-color: var(--color-success-container); }
+.bg-warning-container { background-color: var(--color-warning-container); }
+.bg-error-container { background-color: var(--color-error-container); }
+.bg-subtle { background-color: var(--color-neutral-divider); }
 .bg-primary-container { background-color: var(--color-primary-container); color: var(--color-on-primary-container); }
 .bg-warning { background-color: var(--color-warning); }
 .bg-success { background-color: var(--color-success); }
@@ -163,6 +171,34 @@ body {
 
 .grid { display: grid; }
 .grid-cols-1 { grid-template-columns: 1fr; }
+.grid-cols-7 { grid-template-columns: repeat(7, minmax(0, 1fr)); }
+.gap-1px { gap: 1px; }
+
+/* Heatmap Tooltip */
+.aspect-square { aspect-ratio: 1 / 1; }
+.cursor-pointer { cursor: pointer; }
+.tooltip-container { position: relative; }
+.tooltip-content {
+    visibility: hidden;
+    opacity: 0;
+    transition: visibility 0.2s, opacity 0.2s;
+    position: absolute;
+    z-index: 50;
+    bottom: 110%;
+    left: 50%;
+    transform: translateX(-50%);
+    width: 200px;
+    background-color: var(--color-bg-surface);
+    border: 1px solid var(--color-neutral-border);
+    padding: var(--space-md);
+    border-radius: var(--radius-md);
+    box-shadow: var(--shadow-lg);
+    pointer-events: none;
+}
+.tooltip-container:hover .tooltip-content {
+    visibility: visible;
+    opacity: 1;
+}
 .gap-xl { gap: var(--space-xl); }
 
 .hidden { display: none !important; }
