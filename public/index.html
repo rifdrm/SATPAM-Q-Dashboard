@@ -42,8 +42,11 @@
     <!-- APP LAYOUT (Hidden until logged in) -->
     <div id="app-layout" class="app-layout hidden">
         
+        <!-- SIDEBAR OVERLAY (Mobile) -->
+        <div id="sidebar-overlay" class="sidebar-overlay"></div>
+
         <!-- SIDEBAR (Desktop) -->
-        <nav class="sidebar bg-surface-container-low border-r border-medium z-30">
+        <nav id="sidebar" class="sidebar bg-surface-container-low border-r border-medium z-30">
             <div class="sidebar-header p-xl border-b border-subtle">
                 <h1 class="font-display text-headline text-primary mb-xs">SATPAM-Q</h1>
                 <p class="font-body text-body-sm text-on-surface-variant">Quail Monitoring System</p>
@@ -81,7 +84,7 @@
             <header class="topbar bg-background border-b border-medium z-20">
                 <div class="topbar-container">
                     <div class="topbar-left">
-                        <button class="menu-btn text-primary">
+                        <button id="btn-menu" class="menu-btn text-primary">
                             <span class="material-symbols-outlined">menu</span>
                         </button>
                         <h1 class="font-display text-subhead font-bold text-primary mobile-only">SATPAM-Q</h1>

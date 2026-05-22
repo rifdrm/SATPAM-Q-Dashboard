@@ -73,6 +73,11 @@ const btnExportCSV = document.getElementById("btn-export-csv");
 const btnExportExcel = document.getElementById("btn-export-excel");
 const btnExportPDF = document.getElementById("btn-export-pdf");
 
+// Mobile Sidebar Elements
+const btnMenu = document.getElementById("btn-menu");
+const sidebar = document.getElementById("sidebar");
+const sidebarOverlay = document.getElementById("sidebar-overlay");
+
 let currentModeState = 0;
 let currentKipasState = 0;
 let currentSprayerState = 0;
@@ -326,7 +331,22 @@ toggleSprayer.addEventListener("change", (e) => {
 });
 
 // =========================================================
-// 7. LOGIKA EXPORT DATA (CSV, EXCEL, PDF)
+// 7. LOGIKA MENU MOBILE
+// =========================================================
+if (btnMenu && sidebar && sidebarOverlay) {
+  btnMenu.addEventListener("click", () => {
+    sidebar.classList.add("open");
+    sidebarOverlay.classList.add("active");
+  });
+
+  sidebarOverlay.addEventListener("click", () => {
+    sidebar.classList.remove("open");
+    sidebarOverlay.classList.remove("active");
+  });
+}
+
+// =========================================================
+// 8. LOGIKA EXPORT DATA (CSV, EXCEL, PDF)
 // =========================================================
 btnShowExport.addEventListener("click", () => exportModal.classList.remove("hidden"));
 btnCloseModal.addEventListener("click", () => exportModal.classList.add("hidden"));
