@@ -174,8 +174,14 @@ body {
 .grid-cols-7 { grid-template-columns: repeat(7, minmax(0, 1fr)); }
 .gap-1px { gap: 1px; }
 
-/* Heatmap Tooltip */
-.aspect-square { aspect-ratio: 1 / 1; }
+/* Heatmap Tooltip & Cells */
+.calendar-cell { aspect-ratio: 1 / 1; }
+@media (min-width: 768px) {
+    .calendar-cell {
+        aspect-ratio: auto;
+        min-height: 120px;
+    }
+}
 .cursor-pointer { cursor: pointer; }
 .tooltip-container { position: relative; }
 .tooltip-content {

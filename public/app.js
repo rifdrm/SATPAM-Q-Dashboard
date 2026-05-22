@@ -588,7 +588,7 @@ function drawCalendar(year, month, totalDays, dailyData, startDayOfWeek) {
   // startDayOfWeek: 0 = Minggu, 1 = Senin, dst. Di UI kita pakai Minggu(0) sebagai hari pertama
   for (let i = 0; i < startDayOfWeek; i++) {
     const emptyCell = document.createElement("div");
-    emptyCell.className = "bg-surface-container-high border-r border-b border-subtle aspect-square";
+    emptyCell.className = "bg-surface-container-high border-r border-b border-subtle calendar-cell";
     heatmapGrid.appendChild(emptyCell);
   }
 
@@ -616,7 +616,7 @@ function drawCalendar(year, month, totalDays, dailyData, startDayOfWeek) {
     }
 
     const cell = document.createElement("div");
-    cell.className = `${bgColorClass} aspect-square relative tooltip-container border-r border-b border-subtle hover:opacity-90 transition-opacity cursor-pointer`;
+    cell.className = `${bgColorClass} calendar-cell relative tooltip-container border-r border-b border-subtle hover:opacity-90 transition-opacity cursor-pointer`;
     
     // Teks Tanggal & PPM
     let innerHtml = `
